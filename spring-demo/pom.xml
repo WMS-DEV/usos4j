@@ -8,9 +8,9 @@
 		<version>3.1.5</version>
 		<relativePath/>
 	</parent>
-	<groupId>dev.wms</groupId>
+	<groupId>pl.wmsdev</groupId>
 	<artifactId>usos4j-spring-demo</artifactId>
-	<version>0.1.0</version>
+	<version>1.0.0</version>
 	<name>Usos4jSpringDemo</name>
 	<description>Spring demo for Usos4j</description>
 	<properties>
@@ -23,9 +23,9 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>dev.wms</groupId>
+			<groupId>pl.wmsdev</groupId>
 			<artifactId>usos4j</artifactId>
-			<version>0.1.0</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
