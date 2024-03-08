@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Usos4j - Term</title>
+
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+    <main>
+        <a href="/"><button class="home-button">Home</button></a>
+
+        <h1>Usos4j Spring Boot Demo</h1>
+
+        <div class="request-box" id="request-term">
+            <h2>Get term information</h2>
+            <label for="termId">Default <b>2023/24-Z</b></label>
+            <input type="text" name="termId" id="termId" placeholder="Term id">
+            <h4>Request url</h4>
+            <pre class="request-url"><span class="request-baseurl">http://localhost:8080/serverapi/term</span>?
+                <span class="request-key key-termId">termId</span>=<span class="request-value value-termId"></span></pre>
+            <button class="submit">Request</button>
+            <div class="result-box result-box-hidden">
+                <h4>Request result</h4>
+                <pre class="result"></pre>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
