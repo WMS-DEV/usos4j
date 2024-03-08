@@ -7,12 +7,39 @@
     <groupId>pl.wmsdev</groupId>
     <artifactId>usos4j</artifactId>
     <version>1.0.0</version>
+    <name>usos4j</name>
+    <description>Java client for USOS API</description>
+    <url>https://github.com/WMS-DEV/usos4j</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>gniadeck</name>
+            <email>michal@gniadek.dev</email>
+        </developer>
+        <developer>
+            <name>MDybek</name>
+            <email>marcel.dybek@wmsdev.pl</email>
+        </developer>
+    </developers>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <scribe.version>8.3.3</scribe.version>
     </properties>
+
+    <scm>
+        <connection>scm:git:ggit@github.com:WMS-DEV/usos4j.git</connection>
+        <developerConnection>scm:git:ggit@github.com:WMS-DEV/usos4j.git</developerConnection>
+        <url>https://github.com/WMS-DEV/usos4j</url>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -71,5 +98,47 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>ci-cd</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Prevent gpg from using pinentry programs. Fixes: gpg: signing
+                                        failed: Inappropriate ioctl for device -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
