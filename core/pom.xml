@@ -27,6 +27,10 @@
             <name>MDybek</name>
             <email>marcel.dybek@wmsdev.pl</email>
         </developer>
+        <developer>
+            <name>pszumanski</name>
+            <email>piotr.szumanski@wmsdev.pl</email>
+        </developer>
     </developers>
 
     <properties>
