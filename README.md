@@ -1,13 +1,15 @@
-# usos4j - using USOS API just became fun
+# usos4j - Java client for USOS API
+
+✨ using USOS API just became fun ✨
 
 ## Features
 
 - **Simplified Communication**: Easily interact with the USOS API without dealing with the complexities of low-level HTTP requests.
-- **Detailed Documentation**: Comprehensive documentation to guide developers on how to use the library effectively.
+- **Detailed Documentation**: Comprehensive documentation, with practical demos, to guide developers on how to use the library effectively.
 - **Authentication Handling**: Streamlined handling of OAuth and access tokens for secure communication with the USOS API.
 - **Modular Design**: Organized into modules for easy integration and maintenance.
-- **Unit Testing**: Includes unit tests to ensure the reliability and stability of the library.
-- **Open for extension**: The library includes constructs, that make it easy to integrate more modules, not relying on the library development for it
+- **Well tested**: Includes integration and architecture tests to ensure the reliability and stability of the library.
+- **Open for extension**: The library includes constructs, that make it easy to integrate additional modules, without relying on the library development itself, see generic endpoint demo below
 
 ## Getting Started
 
@@ -22,7 +24,7 @@ Consider checking out our demos on how to use usos4j on basic scenarios:
 - [Web application with oAuth authentication](https://github.com/WMS-DEV/usos4j/tree/master/spring-demo)
 - [Full Spring Security integration - log in to your aplication through USOS](https://github.com/WMS-DEV/usos4j/tree/master/spring-security-demo)
 
-We also offer you an access to a generic endpoint, which can make it easier for you to access USOS as you wish, skipping the authentication, here is an example on how you can use it:
+We also offer you an access to a generic endpoint, which can make it easier for you to access USOS as you wish, providing the authentication support, here is an example on how you can use it:
 ```
 var usos = Usos.builder()......build();
 var serverApi = usos.getServerApi();
@@ -63,13 +65,15 @@ We decided to integrate the most interesting endpoints from the user perspective
 - Checkout our contribution guidelines
 - To fully understand the concepts in the library, consider visiting debug module, where you will be able to find integration tests
 
+## System configuration
+
 Usos integration tests and demos, are based on this system enviroments configuration:
 
-usos_baseurl - base url of USOSAPI that you would like to use. For Politechnika Wrocławska it would be https://apps.usos.pwr.edu.pl/
-usos_consumerKey - Consumer key. You can generate it on a proper USOS APPS website. For Politechnika Wrocławska it would be https://apps.usos.pwr.edu.pl/developers/
-usos_consumerSecret - Consumer secret, also generated from the website above
-usos_login - login to your USOS account, if you wish to use HeadlessUsosProvider (automatic possesion of authorization tokens)
-usos_password - password to your USOS account, as above
+- usos_baseurl - base url of USOSAPI that you would like to use. For Politechnika Wrocławska it would be https://apps.usos.pwr.edu.pl/
+- usos_consumerKey - Consumer key. You can generate it on a proper USOS APPS website. For Politechnika Wrocławska it would be https://apps.usos.pwr.edu.pl/developers/
+- usos_consumerSecret - Consumer secret, also generated from the website above
+- usos_login - login to your USOS account, if you wish to use HeadlessUsosProvider (automatic possesion of authorization tokens)
+- usos_password - password to your USOS account, as above
 
 ## Contributing
 
