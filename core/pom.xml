@@ -31,6 +31,10 @@
             <name>pszumanski</name>
             <email>piotr.szumanski@wmsdev.pl</email>
         </developer>
+        <developer>
+            <name>michalK00</name>
+            <email>michal.klemens@wmsdev.pl</email>
+        </developer>
     </developers>
 
     <properties>
