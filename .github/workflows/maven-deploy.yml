@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - core/src/main/java/**
+      - core/pom.xml
 
 jobs:
   build:
