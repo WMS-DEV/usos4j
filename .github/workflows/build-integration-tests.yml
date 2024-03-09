@@ -28,9 +28,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build integration tests with Maven
-      run: |
-      cd core && mvn -B install --file pom.xml && cd .. && \
-        cd integration-tests && mvn -B install --file pom.xml -DskipTests \
+      run: cd core && mvn -B install --file pom.xml && cd .. && cd integration-tests && mvn -B install --file pom.xml -DskipTests
   cleanup:
     needs: [integration-tests]
     runs-on: ubuntu-latest
