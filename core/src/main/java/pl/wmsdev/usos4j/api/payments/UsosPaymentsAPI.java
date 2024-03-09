@@ -40,13 +40,14 @@ public class UsosPaymentsAPI extends UsosUserAPIDefinition {
         ), UsosInstallmentPlan.class);
     }
 
-    @NotTested(reason = NotTestedReason.NO_DATA)
+    @NotTested(reason = NotTestedReason.NO_ACCESS)
     public UsosPayment payment(UsosPaymentParams params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/payments/payment", params, FieldSelector.fromRequest(UsosPayment.class)
         ), UsosPayment.class);
     }
 
+    @NotTested(reason = NotTestedReason.NO_ACCESS)
     public UsosRemittance remittance(UsosRemittanceParams params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/payments/remittance", params, FieldSelector.fromRequest(UsosRemittance.class)
