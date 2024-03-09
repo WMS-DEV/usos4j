@@ -13,6 +13,8 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+    paths:
+      - core/**
 
 jobs:
   core:
