@@ -1,6 +1,6 @@
 package pl.wmsdev.usos4j.model.registrations;
 
-public enum UsosUserRegistrationsStatus {
+public enum UsosUserRegistrationStatus {
     ACCEPTED,
     ASK,
     REFUSED_PERMANENTLY,
