@@ -17,18 +17,6 @@ on:
       - spring-demo/**
 
 jobs:
-  core:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: maven
-      - name: Build core with Maven
-        run: cd core && mvn -B install --file pom.xml && cd ..
   spring-demo:
     runs-on: ubuntu-latest
     steps:
@@ -40,7 +28,8 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build Spring Demo with Maven
-      run: cd spring-demo && mvn -B install --file pom.xml
+      run: cd core && mvn -B install --file pom.xml && cd .. &&
+      cd spring-demo && mvn -B install --file pom.xml
   cleanup:
     needs: [spring-demo]
     runs-on: ubuntu-latest
