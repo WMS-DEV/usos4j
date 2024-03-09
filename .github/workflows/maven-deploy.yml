@@ -3,8 +3,8 @@ name: Deploy to Sonatype Central
 on:
   push:
     branches: [ main ]
-    # paths:
-    #   - src/main/java/**
+    paths:
+      - core/src/main/java/**
 
 jobs:
   build:
