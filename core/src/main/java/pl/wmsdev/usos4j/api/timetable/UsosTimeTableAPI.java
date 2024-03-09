@@ -98,7 +98,6 @@ public class UsosTimeTableAPI extends UsosUserAPIDefinition implements UsosTimeT
 
     @Override
     public List<UsosTimeTableActivity> courseEdition(String courseId, String termId) {
-        System.out.println("eopwsitejositgjseoigjseoifgjseoifj");
         return Arrays.asList(request(requestFactory.get("services/tt/course_edition",
                 CollectionUtils.mergeMaps(Map.of("course_id", List.of(courseId), "term_id", List.of(termId)),
                         getTimeTableFields())), UsosTimeTableActivity[].class));
