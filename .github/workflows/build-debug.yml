@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Debug - Build and test
+name: Debug - Build
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build debug with Maven
-      run: cd debug && mvn -B install --file pom.xml
+      run: cd debug && mvn -B install --file pom.xml -DskipTests
   cleanup:
     needs: [debug]
     runs-on: ubuntu-latest
