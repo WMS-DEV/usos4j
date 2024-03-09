@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class UsosRegistrationsAPITest extends UsosAPIBaseTest{
 
     @Test
-    @Disabled
+    @Disabled("PWr does not support this request, 500 - internal server error")
     void courseRegistrationRounds() {
         log(userApi.registrations().courseRegistrationRounds(UsosCourseRegistrationRoundsParams.builder("W04-IST-SI-1-23/24Z")
                 .build()
@@ -56,7 +56,7 @@ public class UsosRegistrationsAPITest extends UsosAPIBaseTest{
     }
 
     @Test
-    @Disabled
+    @Disabled("PWr does not support this request, 500 - internal server error")
     void searchRounds() {
         log(userApi.registrations().searchRounds(UsosSearchRoundsParams.builder(
                 LocalDate.of(2023, 9, 25),
@@ -66,13 +66,13 @@ public class UsosRegistrationsAPITest extends UsosAPIBaseTest{
     }
 
     @Test
-    @Disabled
+    @Disabled("PWr does not support this request, 500 - internal server error")
     void registrationRound() {
         log(userApi.registrations().registrationRound(UsosRegistrationRoundParams.builder("W04-IST-SI-1-23/24Z").build()));
     }
 
     @Test
-    @Disabled
+    @Disabled("PWr does not support this request, 500 - internal server error")
     void registrationRoundCourses() {
         log(userApi.registrations().registrationRoundCourses(UsosRegistrationRoundCoursesParams.builder("W04-IST-SI-1-23/24Z").build()));
     }
@@ -87,13 +87,12 @@ public class UsosRegistrationsAPITest extends UsosAPIBaseTest{
     }
 
     @Test
-    @Disabled
+    @Disabled("No data: no valid id to check")
     void tokenRegistration() {
         log(userApi.registrations().tokenRegistration(UsosTokenRegistrationParams.builder("1").build()));
     }
 
     @Test
-    @Disabled
     void tokenRegistrationCourse() {
         log(userApi.registrations().tokenRegistrationCourse(UsosTokenRegistrationCourseParams.builder("W04-IST-SI-1-23/24Z",
                 "W04IST-SI0013L",

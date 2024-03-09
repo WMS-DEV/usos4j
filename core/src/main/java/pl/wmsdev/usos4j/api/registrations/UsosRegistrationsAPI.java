@@ -69,21 +69,21 @@ public class UsosRegistrationsAPI extends UsosUserAPIDefinition {
         ), UsosRegistrationCourse.class);
     }
 
-    @NotTested(reason = NotTestedReason.NO_DATA)
+    @NotTested(reason = NotTestedReason.NO_ACCESS)
     public UsosRegistrationRound registrationRound(UsosRegistrationRoundParams params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/registrations/registration_round", params, FieldSelector.fromRequest(UsosRegistrationRound.class)
         ), UsosRegistrationRound.class);
     }
 
-    @NotTested(reason = NotTestedReason.NO_DATA)
+    @NotTested(reason = NotTestedReason.NO_ACCESS)
     public List<UsosRegistrationRoundCourse> registrationRoundCourses(UsosRegistrationRoundCoursesParams params) {
         return Arrays.asList(requestWithAccessToken(requestFactory.get(
                 "services/registrations/registration_round_courses", params, FieldSelector.fromRequest(UsosRegistrationRoundCourse.class)
         ), UsosRegistrationRoundCourse[].class));
     }
 
-    @NotTested(reason = NotTestedReason.NO_DATA)
+    @NotTested(reason = NotTestedReason.NO_ACCESS)
     public List<UsosRegistrationRound> searchRounds(UsosSearchRoundsParams params) {
         return Arrays.asList(requestWithAccessToken(requestFactory.get(
                 "services/registrations/search_rounds", params, FieldSelector.fromRequest(UsosRegistrationRound.class)
@@ -103,14 +103,12 @@ public class UsosRegistrationsAPI extends UsosUserAPIDefinition {
         ), UsosTokenRegistration.class);
     }
 
-    @NotTested(reason = NotTestedReason.NO_DATA)
     public UsosTokenRegistrationCourse tokenRegistrationCourse(UsosTokenRegistrationCourseParams params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/registrations/token_registration_course", params, FieldSelector.fromRequest(UsosTokenRegistrationCourse.class)
         ), UsosTokenRegistrationCourse.class);
     }
 
-    @NotTested(reason = NotTestedReason.NO_DATA)
     public UsosTokenRegistrationRound tokenRegistrationRound(UsosTokenRegistrationRoundParams params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/registrations/token_registration_round", params, FieldSelector.fromRequest(UsosTokenRegistrationRound.class)
@@ -130,7 +128,6 @@ public class UsosRegistrationsAPI extends UsosUserAPIDefinition {
         ), UsosRegistration[].class));
     }
 
-    @NotTested(reason = NotTestedReason.NO_DATA)
     public List<UsosTokenRegistration> userTokenRegistrations(UsosUserTokenRegistrationsParams params) {
         return Arrays.asList(requestWithAccessToken(requestFactory.get(
                 "services/registrations/user_token_registrations", params, FieldSelector.fromRequest(UsosTokenRegistration.class)
