@@ -28,8 +28,9 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build Spring Demo with Maven
-      run: cd core && mvn -B install --file pom.xml && cd .. &&
-      cd spring-demo && mvn -B install --file pom.xml
+      run: | 
+      cd core && mvn -B install --file pom.xml && cd .. && \
+      cd spring-demo && mvn -B install --file pom.xml \
   cleanup:
     needs: [spring-demo]
     runs-on: ubuntu-latest
