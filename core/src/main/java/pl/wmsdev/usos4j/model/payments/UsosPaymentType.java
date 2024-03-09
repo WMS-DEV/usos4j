@@ -2,7 +2,7 @@ package pl.wmsdev.usos4j.model.payments;
 
 public enum UsosPaymentType {
     DORMITORY,
-    TUITION_FREE,
+    TUITION_FEE,
     DEPOSIT,
     INTEREST,
     RETAKE_OF_STUDY_PERIOD,
@@ -11,5 +11,5 @@ public enum UsosPaymentType {
     COURSE_RETAKE,
     CREDIT_POINT,
     TOKEN,
-    OTHERS;
+    OTHERS
 }

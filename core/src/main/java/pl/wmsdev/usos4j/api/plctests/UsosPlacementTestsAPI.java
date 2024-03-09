@@ -10,7 +10,7 @@ import pl.wmsdev.usos4j.model.auth.UsosAccessToken;
 import pl.wmsdev.usos4j.model.common.FieldSelector;
 import pl.wmsdev.usos4j.model.plctests.UsosPlacementTest;
 import pl.wmsdev.usos4j.model.plctests.UsosPlacementTestResult;
-import pl.wmsdev.usos4j.model.plctests.UsosPlacementTestsParams;
+import pl.wmsdev.usos4j.model.plctests.UsosPlacementTestParams;
 import pl.wmsdev.usos4j.model.plctests.UsosPlacementTestsResultParams;
 
 import java.util.Arrays;
@@ -26,7 +26,7 @@ public class UsosPlacementTestsAPI extends UsosUserAPIDefinition implements Usos
 
     @Override
     @Beta
-    public UsosPlacementTest test(UsosPlacementTestsParams params) {
+    public UsosPlacementTest test(UsosPlacementTestParams params) {
         return request(requestFactory.get(
                 "services/plctests/test", params,
                 FieldSelector.fromRequest(UsosPlacementTest.class)
