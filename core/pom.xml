@@ -27,6 +27,14 @@
             <name>MDybek</name>
             <email>marcel.dybek@wmsdev.pl</email>
         </developer>
+        <developer>
+            <name>pszumanski</name>
+            <email>piotr.szumanski@wmsdev.pl</email>
+        </developer>
+        <developer>
+            <name>michalK00</name>
+            <email>michal.klemens@wmsdev.pl</email>
+        </developer>
     </developers>
 
     <properties>
@@ -66,7 +74,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.4.9</version>
+            <version>1.5.3</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
