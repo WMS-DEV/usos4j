@@ -15,7 +15,11 @@
 
 The library is available on maven-central, use this code snippet to use it!
 ```
-HERE INSERT MAVEN DEPENDENCY
+<dependency>
+    <groupId>pl.wmsdev</groupId>
+    <artifactId>usos4j</artifactId>
+    <version>1.0.0</version>
+</dependency>
 ```
 
 Consider checking out our demos on how to use usos4j on basic scenarios:
