@@ -6,7 +6,7 @@ public class UsosCourseAPITest extends UsosAPIBaseTest {
 
     @Test
     void user() {
-        log(userApi.users().user());
+        log(userApi.courses().user());
     }
 
 }
