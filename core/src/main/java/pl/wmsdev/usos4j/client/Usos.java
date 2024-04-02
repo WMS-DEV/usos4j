@@ -10,6 +10,7 @@ import pl.wmsdev.usos4j.api.courses.UsosCoursesAPI;
 import pl.wmsdev.usos4j.api.credits.UsosCreditsAPI;
 import pl.wmsdev.usos4j.api.fac.UsosFacultiesServerAPI;
 import pl.wmsdev.usos4j.api.feedback.UsosFeedbackAPI;
+import pl.wmsdev.usos4j.api.grades.UsosGradesAPI;
 import pl.wmsdev.usos4j.api.groups.UsosGroupsAPI;
 import pl.wmsdev.usos4j.api.mailing.UsosMailingAPI;
 import pl.wmsdev.usos4j.api.mailing.UsosMailingServerAPI;
@@ -94,7 +95,8 @@ public class Usos {
                 new UsosGroupsAPI(oAuthService, requestFactory, accessToken),
                 new UsosPaymentsAPI(oAuthService, requestFactory, accessToken),
                 new UsosPlacementTestsAPI(oAuthService, requestFactory, accessToken),
-                new UsosRegistrationsAPI(oAuthService, requestFactory, accessToken));
+                new UsosRegistrationsAPI(oAuthService, requestFactory, accessToken),
+                new UsosGradesAPI(oAuthService, requestFactory, accessToken));
     }
 
     public UsosServerAPI getServerApi() {
@@ -109,7 +111,8 @@ public class Usos {
                 new UsosTermsAPI(oAuthService, requestFactory),
                 new UsosFacultiesServerAPI(oAuthService, requestFactory),
                 new UsosGroupsAPI(oAuthService, requestFactory, null),
-                new UsosPlacementTestsAPI(oAuthService, requestFactory, null));
+                new UsosPlacementTestsAPI(oAuthService, requestFactory, null),
+                new UsosGradesAPI(oAuthService, requestFactory, null));
     }
 
 }
