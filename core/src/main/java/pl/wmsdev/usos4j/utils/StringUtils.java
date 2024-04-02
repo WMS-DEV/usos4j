@@ -6,14 +6,4 @@ public final class StringUtils {
         return text.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
     }
 
-    public static String arrayToPipelinedString(String requiredArgument, String... additionalArguments) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(requiredArgument).append("|");
-        for(String argument : additionalArguments) {
-            stringBuilder.append(argument).append("|");
-        }
-        stringBuilder.deleteCharAt(stringBuilder.lastIndexOf("|"));
-        return stringBuilder.toString();
-    }
-
 }

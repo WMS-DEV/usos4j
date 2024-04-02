@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pl.wmsdev.usos4j.model.grades.*;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class UsosGradesAPITest extends UsosAPIBaseTest {
 
     @Test
@@ -32,13 +34,20 @@ public class UsosGradesAPITest extends UsosAPIBaseTest {
     }
 
     @Test
-    void gradeTypesSingle() {
+    void gradeTypesSingleArgument() {
         log(serverApi.grades().gradeTypes(UsosGradeTypesParam.builder("PWR").build()));
     }
 
     @Test
-    void gradeTypesMultiple() {
+    void gradeTypesMultipleArguments() {
         log(serverApi.grades().gradeTypes(UsosGradeTypesParam.builder("PWR", "ECTS", "PWR-OLD").build()));
+    }
+
+    @Test
+    void gradeTypesNoArgument() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            log(serverApi.grades().gradeTypes(UsosGradeTypesParam.builder().build()));
+        });
     }
 
     @Test
@@ -48,7 +57,19 @@ public class UsosGradesAPITest extends UsosAPIBaseTest {
     }
 
     @Test
-    void terms2() {
+    void terms2SingleArgument() {
         log(userApi.grades().terms2(UsosGradesTermsParam.builder("2023/24-Z").build()));
+    }
+
+    @Test
+    void terms2MultipleArguments() {
+        log(userApi.grades().terms2(UsosGradesTermsParam.builder("2023/24-Z", "2023/24-L").build()));
+    }
+
+    @Test
+    void terms2NoArgument() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            log(serverApi.grades().gradeTypes(UsosGradeTypesParam.builder().build()));
+        });
     }
 }
