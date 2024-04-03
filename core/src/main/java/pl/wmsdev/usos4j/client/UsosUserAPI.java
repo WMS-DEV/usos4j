@@ -5,6 +5,7 @@ import pl.wmsdev.usos4j.api.cards.UsosCardsAPI;
 import pl.wmsdev.usos4j.api.courses.UsosCoursesAPI;
 import pl.wmsdev.usos4j.api.credits.UsosCreditsAPI;
 import pl.wmsdev.usos4j.api.feedback.UsosFeedbackAPI;
+import pl.wmsdev.usos4j.api.grades.UsosGradesAPI;
 import pl.wmsdev.usos4j.api.groups.UsosGroupsAPI;
 import pl.wmsdev.usos4j.api.mailing.UsosMailingAPI;
 import pl.wmsdev.usos4j.api.generic.UsosGenericUserAPI;
@@ -37,6 +38,7 @@ public class UsosUserAPI {
     private final UsosPaymentsAPI usosPaymentsApi;
     private final UsosPlacementTestsAPI usosPlacementTestsAPI;
     private final UsosRegistrationsAPI usosRegistrationsApi;
+    private final UsosGradesAPI usosGradesAPI;
 
 
     public UsosUsersAPI users() {
@@ -107,5 +109,9 @@ public class UsosUserAPI {
   
     public UsosRegistrationsAPI registrations() {
       return usosRegistrationsApi;
+    }
+
+    public UsosGradesAPI grades() {
+        return usosGradesAPI;
     }
 }

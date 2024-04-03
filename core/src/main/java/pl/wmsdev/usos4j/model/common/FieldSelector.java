@@ -2,6 +2,7 @@ package pl.wmsdev.usos4j.model.common;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import pl.wmsdev.usos4j.docs.ExcludeField;
+import pl.wmsdev.usos4j.utils.ArrayUtils;
 import pl.wmsdev.usos4j.utils.StringUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -43,6 +44,13 @@ public class FieldSelector {
 
     public static FieldSelector fromRequest(Class<? extends UsosObject> usosObjectClass) {
         return new FieldSelector(extractFields(usosObjectClass));
+    }
+
+    public static FieldSelector from(String... selectors) {
+        if (selectors.length == 0) {
+            throw new IllegalArgumentException("args cannot be empty");
+        }
+        return new FieldSelector(ArrayUtils.joinArray("|", selectors));
     }
 
     public static FieldSelector fromFormattedString(String format, Class<? extends UsosObject> ...usosObjectClasses) {
