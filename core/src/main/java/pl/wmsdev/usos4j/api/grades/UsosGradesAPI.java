@@ -75,7 +75,7 @@ public class UsosGradesAPI extends UsosUserAPIDefinition implements UsosGradesSe
     }
 
     @SuppressWarnings("unchecked")
-    public Map<String, UsosGradesCourseEdition> terms2(UsosGradesTermsParam params) {
+    public Map<String, Map<String, UsosGradesCourseEdition>> terms2(UsosGradesTermsParam params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/grades/terms2", params,
                 FieldSelector.fromRequest(UsosGrade.class)
