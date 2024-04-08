@@ -4,13 +4,17 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pl.wmsdev.usos4j.model.grades.*;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UsosGradesAPITest extends UsosAPIBaseTest {
 
     @Test
     void courseEdition2() {
-        log(userApi.grades().courseEdition2(UsosGradesCourseEditionParams.builder("W13IST-SI0002G", "2023/24-Z").build()));
+        var result = userApi.grades().courseEdition2(UsosGradesCourseEditionParams.builder("W13IST-SI0002G", "2023/24-Z").build());
+        log("result: " + result);
+        log("grade: " + Arrays.toString(result.courseGrades()));
     }
 
     @Test
