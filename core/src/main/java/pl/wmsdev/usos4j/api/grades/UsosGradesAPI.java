@@ -7,7 +7,6 @@ import pl.wmsdev.usos4j.docs.NotTested;
 import pl.wmsdev.usos4j.docs.NotTestedReason;
 import pl.wmsdev.usos4j.model.auth.UsosAccessToken;
 import pl.wmsdev.usos4j.model.common.FieldSelector;
-import pl.wmsdev.usos4j.model.courses.UsosCourseEdition;
 import pl.wmsdev.usos4j.model.grades.*;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public class UsosGradesAPI extends UsosUserAPIDefinition implements UsosGradesSe
         super(oAuthService, requestFactory, accessToken);
     }
 
-    public UsosGradesCourseEdition courseEdition2(UsosGradesCourseEditionParams params) {
+    public UsosGradesCourseEdition courseEdition2(UsosGradesCourseEditionParam params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/grades/course_edition2", params,
                 FieldSelector.fromRequest(UsosGrade.class)
