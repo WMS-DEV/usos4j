@@ -2,5 +2,11 @@ package pl.wmsdev.usos4j.model.courses;
 
 import pl.wmsdev.usos4j.model.common.UsosCommonObject;
 import pl.wmsdev.usos4j.model.common.UsosLocalizedString;
+import pl.wmsdev.usos4j.model.terms.UsosTerm;
 
-public record UsosCourse(String id, UsosLocalizedString name) implements UsosCommonObject {}
+import java.util.List;
+import java.util.Map;
+
+public record UsosCourse(String id, UsosLocalizedString name, String homepageUrl,
+                         String profileUrl, boolean isCurrentlyConducted, Map<String, String>[] terms,
+                         String facId, String langId, float ects_credits_simplified) implements UsosCommonObject {}

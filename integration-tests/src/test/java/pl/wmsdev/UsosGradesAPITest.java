@@ -12,7 +12,7 @@ public class UsosGradesAPITest extends UsosAPIBaseTest {
 
     @Test
     void courseEdition2() {
-        var result = userApi.grades().courseEdition2(UsosGradesCourseEditionParams.builder("W13IST-SI0002G", "2023/24-Z").build());
+        var result = userApi.grades().courseEdition2(UsosGradesCourseEditionParam.builder("W13IST-SI0002G", "2023/24-Z").build());
         log("result: " + result);
         log("grade: " + Arrays.toString(result.courseGrades()));
     }

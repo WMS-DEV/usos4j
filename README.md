@@ -49,6 +49,7 @@ The library supports
 - credits
 - fac
 - feedback
+- grades
 - groups
 - mailing
 - news

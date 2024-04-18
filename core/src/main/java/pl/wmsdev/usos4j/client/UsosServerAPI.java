@@ -2,6 +2,7 @@ package pl.wmsdev.usos4j.client;
 
 import pl.wmsdev.usos4j.api.apiref.UsosApiRefAPI;
 import pl.wmsdev.usos4j.api.apisrv.UsosApiSrvAPI;
+import pl.wmsdev.usos4j.api.courses.UsosCoursesServerAPI;
 import pl.wmsdev.usos4j.api.fac.UsosFacultiesServerAPI;
 import pl.wmsdev.usos4j.api.feedback.UsosFeedbackServerAPI;
 import pl.wmsdev.usos4j.api.grades.UsosGradesServerAPI;
@@ -29,6 +30,7 @@ public class UsosServerAPI {
     private final UsosGroupsServerAPI groupsServerAPI;
     private final UsosPlacementTestsServerAPI usosPlacementTestsServerAPI;
     private final UsosGradesServerAPI usosGradesServerAPI;
+    private final UsosCoursesServerAPI usosCoursesServerAPI;
 
     public UsosApiSrvAPI apiSrv() {
         return apiSrvApi;
@@ -80,5 +82,9 @@ public class UsosServerAPI {
 
     public UsosGradesServerAPI grades() {
         return usosGradesServerAPI;
+    }
+
+    public UsosCoursesServerAPI courses() {
+        return usosCoursesServerAPI;
     }
 }

@@ -112,7 +112,8 @@ public class Usos {
                 new UsosFacultiesServerAPI(oAuthService, requestFactory),
                 new UsosGroupsAPI(oAuthService, requestFactory, null),
                 new UsosPlacementTestsAPI(oAuthService, requestFactory, null),
-                new UsosGradesAPI(oAuthService, requestFactory, null));
+                new UsosGradesAPI(oAuthService, requestFactory, null),
+                new UsosCoursesAPI(oAuthService, requestFactory, null));
     }
 
 }
