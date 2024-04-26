@@ -14,6 +14,7 @@ import pl.wmsdev.usos4j.api.payments.UsosPaymentsAPI;
 import pl.wmsdev.usos4j.api.phones.UsosPhonesAPI;
 import pl.wmsdev.usos4j.api.photos.UsosPhotosAPI;
 import pl.wmsdev.usos4j.api.plctests.UsosPlacementTestsAPI;
+import pl.wmsdev.usos4j.api.progs.UsosProgsAPI;
 import pl.wmsdev.usos4j.api.registrations.UsosRegistrationsAPI;
 import pl.wmsdev.usos4j.api.theses.UsosThesesAPI;
 import pl.wmsdev.usos4j.api.timetable.UsosTimeTableAPI;
@@ -39,7 +40,7 @@ public class UsosUserAPI {
     private final UsosPlacementTestsAPI usosPlacementTestsAPI;
     private final UsosRegistrationsAPI usosRegistrationsApi;
     private final UsosGradesAPI usosGradesAPI;
-
+    private final UsosProgsAPI usosProgsAPI;
 
     public UsosUsersAPI users() {
         return userApi;
@@ -113,5 +114,9 @@ public class UsosUserAPI {
 
     public UsosGradesAPI grades() {
         return usosGradesAPI;
+    }
+
+    public UsosProgsAPI progs() {
+        return usosProgsAPI;
     }
 }
