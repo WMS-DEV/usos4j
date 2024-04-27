@@ -22,6 +22,7 @@ public class UsosRegistrationsAPITest extends UsosAPIBaseTest{
     }
 
     @Test
+    @Disabled("PWr temporarily grants no access")
     void coursesCart() {
         log(userApi.registrations().coursesCart());
     }

@@ -18,7 +18,7 @@ The library is available on maven-central, use this code snippet to use it!
 <dependency>
     <groupId>pl.wmsdev</groupId>
     <artifactId>usos4j</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -56,7 +56,8 @@ The library supports
 - payments
 - phones
 - photos
-- pictests
+- plctests
+- progs
 - registrations
 - terms
 - theses
