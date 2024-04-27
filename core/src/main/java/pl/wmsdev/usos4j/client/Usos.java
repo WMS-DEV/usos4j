@@ -21,6 +21,7 @@ import pl.wmsdev.usos4j.api.payments.UsosPaymentsAPI;
 import pl.wmsdev.usos4j.api.phones.UsosPhonesAPI;
 import pl.wmsdev.usos4j.api.photos.UsosPhotosAPI;
 import pl.wmsdev.usos4j.api.plctests.UsosPlacementTestsAPI;
+import pl.wmsdev.usos4j.api.progs.UsosProgsAPI;
 import pl.wmsdev.usos4j.api.registrations.UsosRegistrationsAPI;
 import pl.wmsdev.usos4j.api.terms.UsosTermsAPI;
 import pl.wmsdev.usos4j.api.theses.UsosThesesAPI;
@@ -96,7 +97,8 @@ public class Usos {
                 new UsosPaymentsAPI(oAuthService, requestFactory, accessToken),
                 new UsosPlacementTestsAPI(oAuthService, requestFactory, accessToken),
                 new UsosRegistrationsAPI(oAuthService, requestFactory, accessToken),
-                new UsosGradesAPI(oAuthService, requestFactory, accessToken));
+                new UsosGradesAPI(oAuthService, requestFactory, accessToken),
+                new UsosProgsAPI(oAuthService, requestFactory, accessToken));
     }
 
     public UsosServerAPI getServerApi() {
@@ -113,7 +115,8 @@ public class Usos {
                 new UsosGroupsAPI(oAuthService, requestFactory, null),
                 new UsosPlacementTestsAPI(oAuthService, requestFactory, null),
                 new UsosGradesAPI(oAuthService, requestFactory, null),
-                new UsosCoursesAPI(oAuthService, requestFactory, null));
+                new UsosCoursesAPI(oAuthService, requestFactory, null),
+                new UsosProgsAPI(oAuthService, requestFactory, null));
     }
 
 }

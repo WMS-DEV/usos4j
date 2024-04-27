@@ -11,6 +11,7 @@ import pl.wmsdev.usos4j.api.mailing.UsosMailingServerAPI;
 import pl.wmsdev.usos4j.api.generic.UsosGenericServerAPI;
 import pl.wmsdev.usos4j.api.phones.UsosPhonesServerAPI;
 import pl.wmsdev.usos4j.api.plctests.UsosPlacementTestsServerAPI;
+import pl.wmsdev.usos4j.api.progs.UsosProgsServerAPI;
 import pl.wmsdev.usos4j.api.terms.UsosTermsAPI;
 import pl.wmsdev.usos4j.api.timetable.UsosTimeTableServerAPI;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class UsosServerAPI {
     private final UsosPlacementTestsServerAPI usosPlacementTestsServerAPI;
     private final UsosGradesServerAPI usosGradesServerAPI;
     private final UsosCoursesServerAPI usosCoursesServerAPI;
+    private final UsosProgsServerAPI usosProgsServerAPI;
 
     public UsosApiSrvAPI apiSrv() {
         return apiSrvApi;
@@ -86,5 +88,9 @@ public class UsosServerAPI {
 
     public UsosCoursesServerAPI courses() {
         return usosCoursesServerAPI;
+    }
+
+    public UsosProgsServerAPI progs() {
+        return usosProgsServerAPI;
     }
 }
