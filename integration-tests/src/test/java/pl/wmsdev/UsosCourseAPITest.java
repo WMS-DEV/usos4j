@@ -20,7 +20,7 @@ public class UsosCourseAPITest extends UsosAPIBaseTest {
     void course() {
         var result = serverApi.courses().course(UsosCourseParam.builder("W13IST-SI0002G").build());
         log("result: " + result);
-        log("temrs: " + Arrays.toString(result.terms()));
+        log("terms: " + Arrays.toString(result.terms()));
     }
 
     @Test
