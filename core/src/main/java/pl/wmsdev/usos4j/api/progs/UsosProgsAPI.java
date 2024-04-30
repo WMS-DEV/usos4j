@@ -50,12 +50,11 @@ public class UsosProgsAPI extends UsosUserAPIDefinition implements UsosProgsServ
 				UsosStage.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<UsosStudentProgramme> student() {
-		return requestWithAccessToken(requestFactory.get(
+		return List.of(requestWithAccessToken(requestFactory.get(
 				"services/progs/student",
 				FieldSelector.fromRequest(UsosStudentProgramme.class)),
-				List.class);
+				UsosStudentProgramme[].class));
 	}
 
 	public UsosStudentProgramme studentProgramme(UsosStudentProgrammeParam params) {

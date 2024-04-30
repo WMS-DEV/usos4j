@@ -45,6 +45,7 @@ public class UsosProgsAPITest extends UsosAPIBaseTest {
 	@Test
 	void student() {
 		log(userApi.progs().student());
+		log(userApi.progs().student().get(0).programme().id());
 	}
 
 	@Test
