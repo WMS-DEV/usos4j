@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.client;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,12 @@ public abstract class UsosServerAPIDefinition {
     protected <T> T request(OAuthRequest request, Class<T> responseClazz) {
         log.info("Request to " + request.getCompleteUrl());
         return UsosDeserializationUtils.deserialize(request(request), responseClazz);
+    }
+
+    @SneakyThrows
+    protected <T> T request(OAuthRequest request, TypeReference<T> typeReference) {
+        log.info("Request to " + request.getCompleteUrl());
+        return UsosDeserializationUtils.deserialize(request(request), typeReference);
     }
 
 }

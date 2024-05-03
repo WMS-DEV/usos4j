@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.api.groups;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.client.ScribeOAuthRequestFactory;
 import pl.wmsdev.usos4j.client.UsosUserAPIDefinition;
@@ -73,7 +74,7 @@ public class UsosGroupsAPI extends UsosUserAPIDefinition implements UsosGroupsSe
     public Map<String, UsosGroup> groups(UsosGroupsParams params) {
         return request(requestFactory.get(
                 "services/groups/groups", params, FieldSelector.fromRequest(UsosGroup.class)
-        ), Map.class);
+        ), new TypeReference<>() {});
     }
 
     @Override

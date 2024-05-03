@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.client;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.model.auth.UsosAccessToken;
@@ -19,6 +20,11 @@ public abstract class UsosUserAPIDefinition extends UsosServerAPIDefinition {
     protected <T> T requestWithAccessToken(OAuthRequest request, Class<T> responseClazz) {
         oAuthService.signRequest(accessToken.toFrameworkToken(), request);
         return request(request, responseClazz);
+    }
+
+    protected <T> T requestWithAccessToken(OAuthRequest request, TypeReference<T> typeReference) {
+        oAuthService.signRequest(accessToken.toFrameworkToken(), request);
+        return request(request, typeReference);
     }
 
     protected String requestWithAccessToken(OAuthRequest request) {

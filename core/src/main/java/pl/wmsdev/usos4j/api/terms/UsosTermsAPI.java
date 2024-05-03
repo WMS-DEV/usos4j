@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.api.terms;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.client.ScribeOAuthRequestFactory;
 import pl.wmsdev.usos4j.client.UsosServerAPIDefinition;
@@ -15,7 +16,9 @@ public class UsosTermsAPI extends UsosServerAPIDefinition {
     }
 
     public List<UsosTerm> search(UsosTermsSearchParams params) {
-        return request(requestFactory.get("services/terms/search", params), List.class);
+        return request(requestFactory.get(
+                "services/terms/search", params),
+                new TypeReference<>() {});
     }
 
     public UsosTerm term(UsosTermParams params) {
@@ -23,10 +26,14 @@ public class UsosTermsAPI extends UsosServerAPIDefinition {
     }
 
     public Map<String, UsosTerm> terms(UsosTermsParams params) {
-        return request(requestFactory.get("services/terms/terms", params), Map.class);
+        return request(requestFactory.get(
+                        "services/terms/terms", params),
+                new TypeReference<>() {});
     }
 
     public List<UsosTerm> termsIndex(UsosTermIndexParams params) {
-        return request(requestFactory.get("services/terms/terms_index", params), List.class);
+        return request(requestFactory.get(
+                "services/terms/terms_index", params),
+                new TypeReference<>() {});
     }
 }

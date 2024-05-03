@@ -13,7 +13,7 @@ public class UsosCourseAPITest extends UsosAPIBaseTest {
 
     @Test
     void classTypesIndex() {
-        log(serverApi.courses().classTypesIndex());
+        log(serverApi.courses().classTypesIndex().values().stream().findFirst().get().name());
     }
 
     @Test

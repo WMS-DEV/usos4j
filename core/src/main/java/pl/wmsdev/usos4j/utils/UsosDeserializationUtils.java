@@ -1,6 +1,7 @@
 package pl.wmsdev.usos4j.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,15 @@ public final class UsosDeserializationUtils {
     public static <T> T deserialize(String json, Class<T> clazz) {
         try {
             return mapper.readValue(json, clazz);
+        } catch (JsonProcessingException e) {
+            log.debug(e.toString());
+            throw new Usos4jException("Error while deserializing JSON: %s".formatted(json));
+        }
+    }
+
+    public static <T> T deserialize(String json, TypeReference<T> typeReference) {
+        try {
+            return mapper.readValue(json, typeReference);
         } catch (JsonProcessingException e) {
             log.debug(e.toString());
             throw new Usos4jException("Error while deserializing JSON: %s".formatted(json));

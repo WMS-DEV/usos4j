@@ -1,5 +1,6 @@
 package pl.wmsdev;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pl.wmsdev.usos4j.model.groups.*;
 
@@ -47,6 +48,7 @@ public class UsosGroupsAPITest extends UsosAPIBaseTest {
     }
 
     @Test
+    @Disabled("PWR denies access")
     void groups() {
         log(userApi.groups().groups(UsosGroupsParams.helper().addGroup(53875, 1).build()));
     }

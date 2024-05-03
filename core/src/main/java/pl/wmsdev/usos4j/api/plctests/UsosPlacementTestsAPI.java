@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.api.plctests;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.client.ScribeOAuthRequestFactory;
 import pl.wmsdev.usos4j.client.UsosUserAPIDefinition;
@@ -54,6 +55,6 @@ public class UsosPlacementTestsAPI extends UsosUserAPIDefinition implements Usos
         return  requestWithAccessToken(requestFactory.get(
                 "services/plctests/user",
                 FieldSelector.fromRequest(UsosPlacementTestResult.class)
-        ), Map.class);
+        ), new TypeReference<>() {});
     }
 }
