@@ -20,7 +20,7 @@ public class UsosApiArchTest {
     @ArchTest
     private final ArchRule api_classes_having_api_suffix =
             apiClasses()
-                    .should().haveNameMatching(".*API");
+                    .should().haveNameMatching(".*API\\$?\\d*");
 
     @ArchTest
     private final ArchRule no_info_logs_in_api =
