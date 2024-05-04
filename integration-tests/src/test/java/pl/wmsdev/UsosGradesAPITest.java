@@ -44,7 +44,9 @@ public class UsosGradesAPITest extends UsosAPIBaseTest {
 
     @Test
     void gradeTypesMultipleArguments() {
-        log(serverApi.grades().gradeTypes(UsosGradeTypesParam.builder("PWR", "ECTS", "PWR-OLD").build()));
+        var result = serverApi.grades().gradeTypes(UsosGradeTypesParam.builder("PWR", "ECTS", "PWR-OLD").build());
+        log("result: " + result);
+        log("1st gradeType name: " + result.values().stream().findFirst().get().name());
     }
 
     @Test

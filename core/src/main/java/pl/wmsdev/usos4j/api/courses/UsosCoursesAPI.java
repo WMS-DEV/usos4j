@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.api.courses;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.client.ScribeOAuthRequestFactory;
 import pl.wmsdev.usos4j.client.UsosUserAPIDefinition;
@@ -19,10 +20,9 @@ public class UsosCoursesAPI extends UsosUserAPIDefinition implements UsosCourses
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Map<String, UsosClassType> classTypesIndex() {
         return request(requestFactory.get("services/courses/classtypes_index"),
-                Map.class);
+                new TypeReference<>() {});
     }
 
     @Override
@@ -59,11 +59,10 @@ public class UsosCoursesAPI extends UsosUserAPIDefinition implements UsosCourses
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Map<String, UsosCourse> courses(UsosCoursesParam params) {
         return request(requestFactory.get("services/courses/courses",
                         params, FieldSelector.fromRequest(UsosCourse.class)),
-                Map.class);
+                new TypeReference<>() {});
     }
 
     public boolean isParticipant(UsosCourseIsParticipantParam params) {
@@ -84,11 +83,10 @@ public class UsosCoursesAPI extends UsosUserAPIDefinition implements UsosCourses
                 UsosUnit.class);
     }
 
-    @SuppressWarnings("unchecked")
     public Map<String, UsosUnit> units(UsosUnitsParam params) {
         return requestWithAccessToken(requestFactory.get("services/courses/units",
                         params, FieldSelector.fromRequest(UsosUnit.class)),
-                Map.class);
+                new TypeReference<>() {});
     }
 
     @Beta
@@ -98,10 +96,9 @@ public class UsosCoursesAPI extends UsosUserAPIDefinition implements UsosCourses
                 UsosCoursesUser.class);
     }
 
-    @SuppressWarnings("unchecked")
     public Map<String, Map<String, String>> userEctsPoints() {
         return requestWithAccessToken(requestFactory.get("services/courses/user_ects_points"),
-                Map.class);
+                new TypeReference<>() {});
     }
 
 }

@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.api.progs;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.client.ScribeOAuthRequestFactory;
 import pl.wmsdev.usos4j.client.UsosUserAPIDefinition;
@@ -25,12 +26,11 @@ public class UsosProgsAPI extends UsosUserAPIDefinition implements UsosProgsServ
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Map<String, UsosProgramme> programmes(UsosProgrammesParam params) {
 		return request(requestFactory.get(
 						"services/progs/programmes", params,
 						FieldSelector.fromRequest(UsosProgramme.class)),
-				Map.class);
+				new TypeReference<>() {});
 	}
 
 	@Override
@@ -42,7 +42,6 @@ public class UsosProgsAPI extends UsosUserAPIDefinition implements UsosProgsServ
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public UsosStage stage(UsosStageParam params) {
 		return request(requestFactory.get(
 						"services/progs/stage", params,
@@ -64,11 +63,10 @@ public class UsosProgsAPI extends UsosUserAPIDefinition implements UsosProgsServ
 				UsosStudentProgramme.class);
 	}
 
-	@SuppressWarnings("unchecked")
 	public Map<String, UsosStudentProgramme> studentProgrammes(UsosStudentProgrammesParam params) {
 		return requestWithAccessToken(requestFactory.get(
 				"services/progs/student_programmes", params,
 				FieldSelector.fromRequest(UsosStudentProgramme.class)),
-				Map.class);
+				new TypeReference<>() {});
 	}
 }

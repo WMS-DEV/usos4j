@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.api.grades;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.client.ScribeOAuthRequestFactory;
 import pl.wmsdev.usos4j.client.UsosUserAPIDefinition;
@@ -25,12 +26,11 @@ public class UsosGradesAPI extends UsosUserAPIDefinition implements UsosGradesSe
         ), UsosGradesCourseEdition.class);
     }
 
-    @SuppressWarnings("unchecked")
     public Map<Integer, UsosGrade> exam(UsosGradesExamParam params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/grades/exam", params,
                 FieldSelector.fromRequest(UsosGrade.class)
-        ), Map.class);
+        ), new TypeReference<>() {});
     }
 
     public UsosGrade grade(UsosGradeParam params) {
@@ -56,13 +56,12 @@ public class UsosGradesAPI extends UsosUserAPIDefinition implements UsosGradesSe
         ), UsosGradeType[].class));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<String, UsosGradeType> gradeTypes(UsosGradeTypesParam params) {
         return request(requestFactory.get(
                 "services/grades/grade_types", params,
                 FieldSelector.fromRequest(UsosGradeType.class)
-        ), Map.class);
+        ), new TypeReference<>() {});
     }
 
     @NotTested(reason = NotTestedReason.NO_ACCESS)
@@ -73,11 +72,10 @@ public class UsosGradesAPI extends UsosUserAPIDefinition implements UsosGradesSe
         ), UsosGrade[].class));
     }
 
-    @SuppressWarnings("unchecked")
     public Map<String, Map<String, UsosGradesCourseEdition>> terms2(UsosGradesTermsParam params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/grades/terms2", params,
                 FieldSelector.fromRequest(UsosGrade.class)
-        ), Map.class);
+        ), new TypeReference<>() {});
     }
 }

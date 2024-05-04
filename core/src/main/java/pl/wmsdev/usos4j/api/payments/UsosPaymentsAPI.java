@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.api.payments;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.client.ScribeOAuthRequestFactory;
 import pl.wmsdev.usos4j.client.UsosUserAPIDefinition;
@@ -23,7 +24,7 @@ public class UsosPaymentsAPI extends UsosUserAPIDefinition {
     public Map<?, ?> chooseInstallmentPlan(UsosChooseInstallmentPlanParams params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/payments/choose_installment_plan", params
-        ), Map.class);
+        ), new TypeReference<>() {});
     }
 
     @NotTested(reason = NotTestedReason.NO_DATA)

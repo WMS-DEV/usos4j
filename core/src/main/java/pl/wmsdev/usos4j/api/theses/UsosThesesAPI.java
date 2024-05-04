@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.api.theses;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.client.ScribeOAuthRequestFactory;
 import pl.wmsdev.usos4j.client.UsosUserAPIDefinition;
@@ -37,7 +38,7 @@ public class UsosThesesAPI extends UsosUserAPIDefinition {
     public Map<String, UsosThesis> theses(UsosThesesParams params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/theses/theses", params, FieldSelector.fromRequest(UsosThesis.class)
-        ), Map.class);
+        ), new TypeReference<>() {});
     }
 
     public UsosThesesUserData user(UsosThesesUserParams params) {
@@ -49,7 +50,7 @@ public class UsosThesesAPI extends UsosUserAPIDefinition {
     public Map<String, UsosThesesUserData> users(UsosThesesUsersParams params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/theses/users", params, FieldSelector.fromRequest(UsosThesesUserData.class)
-        ), Map.class);
+        ), new TypeReference<>() {});
     }
 
 }

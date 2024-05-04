@@ -1,14 +1,17 @@
 package pl.wmsdev.usos4j.api.fac;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.client.ScribeOAuthRequestFactory;
 import pl.wmsdev.usos4j.client.UsosServerAPIDefinition;
 import pl.wmsdev.usos4j.docs.InProgress;
 import pl.wmsdev.usos4j.model.common.FieldSelector;
+import pl.wmsdev.usos4j.model.common.UsosObject;
 import pl.wmsdev.usos4j.model.fac.*;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +31,7 @@ public class UsosFacultiesServerAPI extends UsosServerAPIDefinition {
     public Map<String, UsosFaculty> faculties(UsosFacultiesParams params) {
         return request(requestFactory.get(
                 "services/fac/faculties", params, FieldSelector.fromRequest(UsosFaculty.class)
-        ), Map.class);
+        ), new TypeReference<>() {});
     }
 
     public UsosFaculty faculty(UsosFacultyParams params) {

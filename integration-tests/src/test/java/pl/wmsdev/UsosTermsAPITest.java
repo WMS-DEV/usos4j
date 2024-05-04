@@ -20,7 +20,9 @@ public class UsosTermsAPITest extends UsosAPIBaseTest {
 
     @Test
     public void terms() {
-        log(serverApi.terms().terms(UsosTermsParams.builder("2022/23-Z", "2022/23", "2023/24-L").build()));
+        var result = serverApi.terms().terms(UsosTermsParams.builder("2022/23-Z", "2022/23", "2023/24-L").build());
+        log("result: " + result);
+        log("1st semester end date " + result.values().stream().findFirst().get().endDate());
     }
 
     @Test

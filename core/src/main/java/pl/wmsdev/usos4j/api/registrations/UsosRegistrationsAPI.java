@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.api.registrations;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.client.ScribeOAuthRequestFactory;
 import pl.wmsdev.usos4j.client.UsosUserAPIDefinition;
@@ -54,7 +55,7 @@ public class UsosRegistrationsAPI extends UsosUserAPIDefinition {
     public Map<?, ?> register(UsosRegisterParams params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/registrations/register", params
-        ), Map.class);
+        ), new TypeReference<>() {});
     }
 
     public UsosRegistration registration(UsosRegistrationParams params) {
@@ -119,7 +120,7 @@ public class UsosRegistrationsAPI extends UsosUserAPIDefinition {
     public Map<?, ?> unregister(UsosUnregisterParams params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/registrations/unregister", params
-        ), Map.class);
+        ), new TypeReference<>() {});
     }
 
     public List<UsosRegistration> userRegistrations(UsosUserRegistrationsParams params) {
