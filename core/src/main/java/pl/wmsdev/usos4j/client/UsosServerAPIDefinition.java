@@ -30,7 +30,7 @@ public abstract class UsosServerAPIDefinition {
 
     @SneakyThrows
     protected <T> T request(OAuthRequest request, TypeReference<T> typeReference) {
-        log.info("Request to " + request.getCompleteUrl());
+        log.debug("Request to " + request.getCompleteUrl());
         return UsosDeserializationUtils.deserialize(request(request), typeReference);
     }
 
