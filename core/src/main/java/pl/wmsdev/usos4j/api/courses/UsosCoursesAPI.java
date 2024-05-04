@@ -96,10 +96,9 @@ public class UsosCoursesAPI extends UsosUserAPIDefinition implements UsosCourses
                 UsosCoursesUser.class);
     }
 
-    @SuppressWarnings("unchecked")
     public Map<String, Map<String, String>> userEctsPoints() {
         return requestWithAccessToken(requestFactory.get("services/courses/user_ects_points"),
-                Map.class);
+                new TypeReference<>() {});
     }
 
 }

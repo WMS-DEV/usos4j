@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.client;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.docs.Beta;
 import pl.wmsdev.usos4j.docs.Deprecated;
@@ -139,15 +140,15 @@ public class UsosUsersAPI extends UsosUserAPIDefinition {
                 UsosUserProgrammsSimple[].class));
     }
 
-    public List<Map<Integer, UsosUser>> users(List<String> userIds) {
-        return Arrays.asList(requestWithAccessToken(requestFactory.get("services/users/users", Map.of("fields",
+    public Map<Integer, UsosUser> users(List<String> userIds) {
+        return requestWithAccessToken(requestFactory.get("services/users/users", Map.of("fields",
                 List.of("id", "first_name", "middle_names", "last_name", "previous_names", "sex", "titles",
                         "student_status", "staff_status", "email_access", "email", "email_url", "has_email", "homepage_url",
                         "profile_url", "phone_numbers", "mobile_numbers", "office_hours", "interests", "has_photo",
                         "photo_urls", "student_number", "pesel", "birth_date", "revenue_office_id", "citizenship",
                         "room", "student_programmes", "employment_functions", "employment_positions",
                         "course_editions_conducted", "postal_addresses", "alt_email", "external_ids",
-                        "phd_student_status", "library_card_id"), "user_ids", userIds)), Map.class));
+                        "phd_student_status", "library_card_id"), "user_ids", userIds)), new TypeReference<>() {});
     }
 
     public String searchHistoryAffect(String userId) {

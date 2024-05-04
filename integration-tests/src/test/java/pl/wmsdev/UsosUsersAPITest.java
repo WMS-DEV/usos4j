@@ -61,7 +61,9 @@ public class UsosUsersAPITest extends UsosAPIBaseTest {
 
     @Test
     void users() {
-        log(userApi.users().users(List.of("297126", "40931", "300493", "2137")));
+        var result = userApi.users().users(List.of("297126", "40931", "300493", "2137"));
+        log(result);
+        log(result.values().stream().findFirst().get().firstName());
     }
 
     @Test
