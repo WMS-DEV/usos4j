@@ -23,7 +23,7 @@ public abstract class UsosServerAPIDefinition {
 
     @SneakyThrows
     protected <T> T request(OAuthRequest request, Class<T> responseClazz) {
-        log.info("Request to " + request.getCompleteUrl());
+        log.debug("Request to " + request.getCompleteUrl());
         return UsosDeserializationUtils.deserialize(request(request), responseClazz);
     }
 
