@@ -1,4 +1,4 @@
 package pl.wmsdev.usos4j.model.cards;
 
-public record UsosCardsRevokeMcardResponse(boolean success) {
+public record UsosCardsRevokeMcardResponse(Boolean success) {
 }

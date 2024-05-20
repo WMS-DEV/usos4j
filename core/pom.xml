@@ -6,7 +6,7 @@
 
     <groupId>pl.wmsdev</groupId>
     <artifactId>usos4j</artifactId>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
     <name>usos4j</name>
     <description>Java client for USOS API</description>
     <url>https://github.com/WMS-DEV/usos4j</url>

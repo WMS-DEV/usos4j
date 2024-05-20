@@ -12,5 +12,5 @@ public record UsosPayment(String id, UsosUser user, Float saldoAmount, UsosInsta
                           LocalDate dateOfPlanChoice, List<UsosInstallmentPlan> availableInstallmentPlans,
                           UsosPaymentsType type, UsosLocalizedString description, String state, String accountNumber,
                           LocalDate paymentDeadline, LocalDate bonusDeadline, Float bonusAmount,
-                          boolean hasBonus, Integer interest, Float totalAmount, UsosPaymentsCurrency currency, UsosFacultySimple faculty,
+                          Boolean hasBonus, Integer interest, Float totalAmount, UsosPaymentsCurrency currency, UsosFacultySimple faculty,
                           LocalDate defaultChoiceDate) implements UsosObject {}
