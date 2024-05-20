@@ -4,5 +4,5 @@ import pl.wmsdev.usos4j.model.common.UsosLocalizedString;
 import pl.wmsdev.usos4j.model.fac.UsosFacultySimple;
 
 public record UsosCalendarEvent(String id, UsosLocalizedString name, String startDate, String endDate,
-                                UsosFacultySimple faculty, String type, boolean isDayOff) {
+                                UsosFacultySimple faculty, String type, Boolean isDayOff) {
 }

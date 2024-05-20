@@ -8,5 +8,5 @@ import java.util.List;
 import java.util.Map;
 
 public record UsosCourse(String id, UsosLocalizedString name, String homepageUrl,
-                         String profileUrl, boolean isCurrentlyConducted, Map<String, String>[] terms,
-                         String facId, String langId, float ects_credits_simplified) implements UsosCommonObject {}
+                         String profileUrl, Boolean isCurrentlyConducted, Map<String, String>[] terms,
+                         String facId, String langId, Float ects_credits_simplified) implements UsosCommonObject {}

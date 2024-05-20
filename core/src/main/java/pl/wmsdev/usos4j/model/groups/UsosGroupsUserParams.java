@@ -5,4 +5,4 @@ import pl.wmsdev.usos4j.model.common.UsosParams;
 import lombok.Builder;
 
 @Builder
-public record UsosGroupsUserParams(UsosLanguage lang, boolean activeTerms) implements UsosParams {}
+public record UsosGroupsUserParams(UsosLanguage lang, Boolean activeTerms) implements UsosParams {}
