@@ -18,7 +18,7 @@ The library is available on maven-central, use this code snippet to use it!
 <dependency>
     <groupId>pl.wmsdev</groupId>
     <artifactId>usos4j</artifactId>
-    <version>1.1.3</version>
+    <version>1.1.4</version>
 </dependency>
 ```
 
