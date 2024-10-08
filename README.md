@@ -13,8 +13,10 @@
 
 ## Getting Started
 
+### Note: JDK 17+ is required
+
 The library is available on maven-central, use this code snippet to use it!
-```
+```XML
 <dependency>
     <groupId>pl.wmsdev</groupId>
     <artifactId>usos4j</artifactId>
@@ -29,7 +31,7 @@ Consider checking out our demos on how to use usos4j on basic scenarios:
 - [Full Spring Security integration - log in to your aplication through USOS](https://github.com/WMS-DEV/usos4j/tree/master/spring-security-demo)
 
 We also offer you an access to a generic endpoint, which can make it easier for you to access USOS as you wish, providing the authentication support, here is an example on how you can use it:
-```
+```java
 var usos = Usos.builder()......build();
 var serverApi = usos.getServerApi();
 var usosApiRefModuleResponse = serverApi.generic()
@@ -72,6 +74,8 @@ We decided to integrate the most interesting endpoints from the user perspective
 - To fully understand the concepts in the library, consider visiting debug module, where you will be able to find integration tests
 
 ## System configuration
+
+You can find available websites for generating USOSAPI keys in [the installations list](https://apps.usos.edu.pl/developers/api/definitions/installations/) 
 
 Usos integration tests and demos, are based on this system enviroments configuration:
 
