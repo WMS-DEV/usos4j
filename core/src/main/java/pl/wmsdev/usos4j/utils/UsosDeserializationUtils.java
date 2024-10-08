@@ -23,7 +23,7 @@ public final class UsosDeserializationUtils {
             return mapper.readValue(json, clazz);
         } catch (JsonProcessingException e) {
             log.debug(e.toString());
-            throw new Usos4jException("Error while deserializing JSON: %s".formatted(json));
+            throw new Usos4jException("Error while deserializing JSON: %s".formatted(json), e);
         }
     }
 
@@ -32,7 +32,7 @@ public final class UsosDeserializationUtils {
             return mapper.readValue(json, typeReference);
         } catch (JsonProcessingException e) {
             log.debug(e.toString());
-            throw new Usos4jException("Error while deserializing JSON: %s".formatted(json));
+            throw new Usos4jException("Error while deserializing JSON: %s".formatted(json), e);
         }
     }
 
