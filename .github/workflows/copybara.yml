@@ -16,4 +16,3 @@ jobs:
           sot_repo: WMS-DEV/usos4j-internal
           destination_repo: WMS-DEV/usos4j
           committer: WMS_BOT <kontakt@wmsdev.pl>
-          copybara_options: --last-rev=b6ec1bddf1dd5de1061358c30d34c30c73516bdd
