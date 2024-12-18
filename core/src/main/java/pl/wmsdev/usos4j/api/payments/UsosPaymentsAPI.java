@@ -55,7 +55,6 @@ public class UsosPaymentsAPI extends UsosUserAPIDefinition {
         ), UsosRemittance.class);
     }
 
-    @NotTested(reason = NotTestedReason.NO_DATA)
     public List<UsosPaymentsUserAccount> userAccounts() {
         return Arrays.asList(requestWithAccessToken(requestFactory.get(
                 "services/payments/user_accounts"
