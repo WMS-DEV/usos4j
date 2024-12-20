@@ -50,7 +50,9 @@ public interface UsosParams {
     }
 
     private static Object[] toObjectArray(Object arrayObject) {
-        assert arrayObject.getClass().isArray() : "Object has to be an array";
+        if(!arrayObject.getClass().isArray()) {
+            throw new IllegalArgumentException("Object has to be an array");
+        }
         int length = Array.getLength(arrayObject);
         Object[] array = new Object[length];
         for(int i = 0; i < length; i++)
