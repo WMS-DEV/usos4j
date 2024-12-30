@@ -5,6 +5,7 @@ import pl.wmsdev.usos4j.api.cards.UsosCardsAPI;
 import pl.wmsdev.usos4j.api.courses.UsosCoursesAPI;
 import pl.wmsdev.usos4j.api.credits.UsosCreditsAPI;
 import pl.wmsdev.usos4j.api.feedback.UsosFeedbackAPI;
+import pl.wmsdev.usos4j.api.geo.UsosGeoAPI;
 import pl.wmsdev.usos4j.api.grades.UsosGradesAPI;
 import pl.wmsdev.usos4j.api.groups.UsosGroupsAPI;
 import pl.wmsdev.usos4j.api.mailing.UsosMailingAPI;
@@ -41,6 +42,7 @@ public class UsosUserAPI {
     private final UsosRegistrationsAPI usosRegistrationsApi;
     private final UsosGradesAPI usosGradesAPI;
     private final UsosProgsAPI usosProgsAPI;
+    private final UsosGeoAPI usosGeoAPI;
 
     public UsosUsersAPI users() {
         return userApi;
@@ -93,7 +95,7 @@ public class UsosUserAPI {
     public UsosThesesAPI theses() {
         return usosThesesApi;
     }
-  
+
     public UsosGenericUserAPI generic() {
         return genericUserApi;
     }
@@ -106,10 +108,12 @@ public class UsosUserAPI {
         return usosPaymentsApi;
     }
 
-    public UsosPlacementTestsAPI plcTests() { return usosPlacementTestsAPI;}
-  
+    public UsosPlacementTestsAPI plcTests() {
+        return usosPlacementTestsAPI;
+    }
+
     public UsosRegistrationsAPI registrations() {
-      return usosRegistrationsApi;
+        return usosRegistrationsApi;
     }
 
     public UsosGradesAPI grades() {
@@ -119,4 +123,9 @@ public class UsosUserAPI {
     public UsosProgsAPI progs() {
         return usosProgsAPI;
     }
+
+    public UsosGeoAPI geo() {
+        return usosGeoAPI;
+    }
+
 }
