@@ -16,3 +16,4 @@ jobs:
           sot_repo: WMS-DEV/usos4j-internal
           destination_repo: WMS-DEV/usos4j
           committer: WMS_BOT <kontakt@wmsdev.pl>
+          push_exclude: .github/dependabot.yml
