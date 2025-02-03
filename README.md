@@ -51,8 +51,10 @@ The library supports
 - credits
 - fac
 - feedback
+- geo
 - grades
 - groups
+- housing
 - mailing
 - news
 - payments

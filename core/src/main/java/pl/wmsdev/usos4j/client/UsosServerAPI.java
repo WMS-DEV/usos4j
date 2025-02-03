@@ -8,6 +8,8 @@ import pl.wmsdev.usos4j.api.feedback.UsosFeedbackServerAPI;
 import pl.wmsdev.usos4j.api.geo.UsosGeoServerAPI;
 import pl.wmsdev.usos4j.api.grades.UsosGradesServerAPI;
 import pl.wmsdev.usos4j.api.groups.UsosGroupsServerAPI;
+import pl.wmsdev.usos4j.api.housing.UsosHousingAPI;
+import pl.wmsdev.usos4j.api.housing.UsosHousingServerAPI;
 import pl.wmsdev.usos4j.api.mailing.UsosMailingServerAPI;
 import pl.wmsdev.usos4j.api.generic.UsosGenericServerAPI;
 import pl.wmsdev.usos4j.api.phones.UsosPhonesServerAPI;
@@ -35,6 +37,7 @@ public class UsosServerAPI {
     private final UsosCoursesServerAPI usosCoursesServerAPI;
     private final UsosProgsServerAPI usosProgsServerAPI;
     private final UsosGeoServerAPI usosGeoServerAPI;
+    private final UsosHousingServerAPI usosHousingServerAPI;
 
     public UsosApiSrvAPI apiSrv() {
         return apiSrvApi;
@@ -98,5 +101,9 @@ public class UsosServerAPI {
 
     public UsosGeoServerAPI geo() {
         return usosGeoServerAPI;
+    }
+
+    public UsosHousingServerAPI housing(){
+        return usosHousingServerAPI;
     }
 }
