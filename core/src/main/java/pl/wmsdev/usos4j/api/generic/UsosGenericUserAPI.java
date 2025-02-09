@@ -21,7 +21,7 @@ public class UsosGenericUserAPI extends UsosUserAPIDefinition {
     }
 
     public <T> T request(String url, Map<String, Collection<String>> params, Class<T> type, String... fields) {
-        if(fields.length != 0) {
+        if (fields.length != 0) {
             var map = new HashMap<>(params);
             map.put("fields", Arrays.asList(fields));
             return request(url, map, type);

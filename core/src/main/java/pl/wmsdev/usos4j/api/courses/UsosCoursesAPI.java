@@ -28,7 +28,7 @@ public class UsosCoursesAPI extends UsosUserAPIDefinition implements UsosCourses
     @Override
     public UsosCourse course(UsosCourseParam params) {
         return request(requestFactory.get("services/courses/course",
-                params, FieldSelector.fromRequest(UsosCourse.class)),
+                        params, FieldSelector.fromRequest(UsosCourse.class)),
                 UsosCourse.class);
     }
 
@@ -73,7 +73,7 @@ public class UsosCoursesAPI extends UsosUserAPIDefinition implements UsosCourses
     @Override
     public UsosCourseSearch search(UsosCourseSearchParam params) {
         return request(requestFactory.get("services/courses/search",
-                params, FieldSelector.fromRequest(UsosCourse.class)),
+                        params, FieldSelector.fromRequest(UsosCourse.class)),
                 UsosCourseSearch.class);
     }
 
@@ -92,7 +92,7 @@ public class UsosCoursesAPI extends UsosUserAPIDefinition implements UsosCourses
     @Beta
     public UsosCoursesUser user() {
         return requestWithAccessToken(requestFactory.get("services/courses/user",
-                UsosCourseUserParam.builder().build(), FieldSelector.fromRequest(UsosCoursesUser.class)),
+                        UsosCourseUserParam.builder().build(), FieldSelector.fromRequest(UsosCoursesUser.class)),
                 UsosCoursesUser.class);
     }
 

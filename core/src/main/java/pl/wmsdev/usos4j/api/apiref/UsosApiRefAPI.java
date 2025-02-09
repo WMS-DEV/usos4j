@@ -20,10 +20,10 @@ public class UsosApiRefAPI extends UsosServerAPIDefinition {
 
     public UsosApiRefMethod method(String name) {
         return request(requestFactory.get("services/apiref/method",
-                Map.of("fields", List.of("name", "short_name", "description",
-                        "brief_description", "ref_url", "auth_options", "arguments",
-                        "returns", "errors", "result_fields", "beta", "deprecated", "is_internal"),
-                        "name", List.of(name))),
+                        Map.of("fields", List.of("name", "short_name", "description",
+                                        "brief_description", "ref_url", "auth_options", "arguments",
+                                        "returns", "errors", "result_fields", "beta", "deprecated", "is_internal"),
+                                "name", List.of(name))),
                 UsosApiRefMethod.class);
     }
 

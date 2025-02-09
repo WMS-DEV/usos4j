@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import pl.wmsdev.usos4j.model.exceptions.Usos4jException;
 import lombok.extern.slf4j.Slf4j;
+import pl.wmsdev.usos4j.model.exceptions.Usos4jException;
 
 
 @Slf4j

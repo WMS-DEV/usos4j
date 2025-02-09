@@ -1,7 +1,7 @@
 package pl.wmsdev.usos4j.model.groups;
 
-import pl.wmsdev.usos4j.model.common.UsosParams;
 import lombok.Builder;
+import pl.wmsdev.usos4j.model.common.UsosParams;
 
 @Builder
 public record UsosCommonGroupParams(String userId) implements UsosParams {

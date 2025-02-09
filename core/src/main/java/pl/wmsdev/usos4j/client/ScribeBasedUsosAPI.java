@@ -4,8 +4,8 @@ import com.github.scribejava.core.builder.api.DefaultApi10a;
 import com.github.scribejava.core.httpclient.HttpClient;
 import com.github.scribejava.core.httpclient.HttpClientConfig;
 import com.github.scribejava.core.oauth.OAuth10aService;
-import pl.wmsdev.usos4j.model.auth.UsosScope;
 import lombok.RequiredArgsConstructor;
+import pl.wmsdev.usos4j.model.auth.UsosScope;
 
 import java.io.OutputStream;
 import java.util.Collection;
@@ -34,7 +34,9 @@ public class ScribeBasedUsosAPI extends DefaultApi10a {
 
 
     @Override
-    public OAuth10aService createService(String apiKey, String apiSecret, String callback, String scope, OutputStream debugStream, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
+    public OAuth10aService createService(String apiKey, String apiSecret, String callback, String scope,
+                                         OutputStream debugStream, String userAgent,
+                                         HttpClientConfig httpClientConfig, HttpClient httpClient) {
         return new UsosOAuthService(this, apiKey, apiSecret, callback, scope, debugStream, userAgent, httpClientConfig, httpClient);
     }
 

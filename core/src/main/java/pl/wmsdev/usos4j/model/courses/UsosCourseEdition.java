@@ -3,7 +3,6 @@ package pl.wmsdev.usos4j.model.courses;
 import pl.wmsdev.usos4j.model.common.UsosLocalizedString;
 import pl.wmsdev.usos4j.model.common.UsosObject;
 import pl.wmsdev.usos4j.model.groups.UsosGroup;
-import pl.wmsdev.usos4j.model.user.UsosUser;
 
 import java.util.List;
 

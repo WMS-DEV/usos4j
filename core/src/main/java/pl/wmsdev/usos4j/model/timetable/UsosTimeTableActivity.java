@@ -5,15 +5,15 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import pl.wmsdev.usos4j.model.common.UsosLocalizedString;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
+import pl.wmsdev.usos4j.model.common.UsosLocalizedString;
 
 import java.time.LocalDateTime;
 
 @Jacksonized
 @Getter
-@FieldDefaults(makeFinal = true, level= AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode

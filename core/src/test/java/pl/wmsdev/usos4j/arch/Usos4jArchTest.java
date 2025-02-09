@@ -26,5 +26,4 @@ public class Usos4jArchTest {
             noClasses().that().areInterfaces().should().haveSimpleNameContaining("Interface");
 
 
-
 }

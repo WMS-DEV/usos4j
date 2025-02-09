@@ -1,16 +1,17 @@
 package pl.wmsdev.usos4j.client;
 
+import lombok.RequiredArgsConstructor;
 import pl.wmsdev.usos4j.api.calendar.UsosCalendarAPI;
 import pl.wmsdev.usos4j.api.cards.UsosCardsAPI;
 import pl.wmsdev.usos4j.api.courses.UsosCoursesAPI;
 import pl.wmsdev.usos4j.api.credits.UsosCreditsAPI;
 import pl.wmsdev.usos4j.api.feedback.UsosFeedbackAPI;
+import pl.wmsdev.usos4j.api.generic.UsosGenericUserAPI;
 import pl.wmsdev.usos4j.api.geo.UsosGeoAPI;
 import pl.wmsdev.usos4j.api.grades.UsosGradesAPI;
 import pl.wmsdev.usos4j.api.groups.UsosGroupsAPI;
 import pl.wmsdev.usos4j.api.housing.UsosHousingAPI;
 import pl.wmsdev.usos4j.api.mailing.UsosMailingAPI;
-import pl.wmsdev.usos4j.api.generic.UsosGenericUserAPI;
 import pl.wmsdev.usos4j.api.news.UsosNewsAPI;
 import pl.wmsdev.usos4j.api.payments.UsosPaymentsAPI;
 import pl.wmsdev.usos4j.api.phones.UsosPhonesAPI;
@@ -20,7 +21,6 @@ import pl.wmsdev.usos4j.api.progs.UsosProgsAPI;
 import pl.wmsdev.usos4j.api.registrations.UsosRegistrationsAPI;
 import pl.wmsdev.usos4j.api.theses.UsosThesesAPI;
 import pl.wmsdev.usos4j.api.timetable.UsosTimeTableAPI;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class UsosUserAPI {
@@ -131,7 +131,7 @@ public class UsosUserAPI {
     }
 
 
-    public UsosHousingAPI housing(){
+    public UsosHousingAPI housing() {
         return usosHousingAPI;
     }
 }

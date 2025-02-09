@@ -59,7 +59,8 @@ public class UsosGroupsAPI extends UsosUserAPIDefinition implements UsosGroupsSe
     @Override
     public UsosClassGroup classGroup(UsosClassGroupParams params) {
         return request(requestFactory.get(
-                "services/groups/class_group", params, FieldSelector.fromRequest(UsosClassGroup.class).removeFields("lecturers", "participants")
+                "services/groups/class_group", params, FieldSelector.fromRequest(UsosClassGroup.class)
+                        .removeFields("lecturers", "participants")
         ), UsosClassGroup.class);
     }
 

@@ -3,8 +3,8 @@ package pl.wmsdev.usos4j.client;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.oauth.OAuth10aService;
-import pl.wmsdev.usos4j.model.auth.UsosAccessToken;
 import lombok.extern.slf4j.Slf4j;
+import pl.wmsdev.usos4j.model.auth.UsosAccessToken;
 
 
 @Slf4j
@@ -36,7 +36,7 @@ public abstract class UsosUserAPIDefinition extends UsosServerAPIDefinition {
     }
 
     private void assertAccessTokenPresent() {
-        if(accessToken == null) {
+        if (accessToken == null) {
             throw new IllegalStateException("Tried to make authenticated request, but no access token is present - " +
                     "make sure you are using User scoped API");
         }

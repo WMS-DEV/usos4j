@@ -10,8 +10,8 @@ import pl.wmsdev.usos4j.docs.NotTestedReason;
 import pl.wmsdev.usos4j.model.auth.UsosAccessToken;
 import pl.wmsdev.usos4j.model.common.FieldSelector;
 import pl.wmsdev.usos4j.model.plctests.UsosPlacementTest;
-import pl.wmsdev.usos4j.model.plctests.UsosPlacementTestResult;
 import pl.wmsdev.usos4j.model.plctests.UsosPlacementTestParams;
+import pl.wmsdev.usos4j.model.plctests.UsosPlacementTestResult;
 import pl.wmsdev.usos4j.model.plctests.UsosPlacementTestsResultParams;
 
 import java.util.Arrays;
@@ -39,7 +39,7 @@ public class UsosPlacementTestsAPI extends UsosUserAPIDefinition implements Usos
         return requestWithAccessToken(requestFactory.get(
                 "services/plctests/test_result", params,
                 FieldSelector.fromRequest(UsosPlacementTestResult.class)
-            ), UsosPlacementTestResult.class);
+        ), UsosPlacementTestResult.class);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class UsosPlacementTestsAPI extends UsosUserAPIDefinition implements Usos
 
     @Beta
     public Map<String, UsosPlacementTestResult> user() {
-        return  requestWithAccessToken(requestFactory.get(
+        return requestWithAccessToken(requestFactory.get(
                 "services/plctests/user",
                 FieldSelector.fromRequest(UsosPlacementTestResult.class)
         ), new TypeReference<>() {});

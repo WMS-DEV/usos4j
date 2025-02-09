@@ -6,8 +6,8 @@ import pl.wmsdev.usos4j.client.UsosUserAPIDefinition;
 import pl.wmsdev.usos4j.model.auth.UsosAccessToken;
 import pl.wmsdev.usos4j.model.timetable.UsosTimeTableActivity;
 import pl.wmsdev.usos4j.model.timetable.UsosTimeTableWebcalUrl;
-import pl.wmsdev.usos4j.utils.UsosDateUtils;
 import pl.wmsdev.usos4j.utils.CollectionUtils;
+import pl.wmsdev.usos4j.utils.UsosDateUtils;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -32,7 +32,9 @@ public class UsosTimeTableAPI extends UsosUserAPIDefinition implements UsosTimeT
 
     @Override
     public List<UsosTimeTableActivity> staff(Integer userId, LocalDate start, Integer days) {
-        return Arrays.asList(request(requestFactory.get("services/tt/staff", getTimeTableParams(userId, start, days)), UsosTimeTableActivity[].class));
+        return Arrays.asList(request(requestFactory.get("services/tt/staff",
+                        getTimeTableParams(userId, start, days)),
+                UsosTimeTableActivity[].class));
     }
 
     public List<UsosTimeTableActivity> student() {
@@ -204,7 +206,10 @@ public class UsosTimeTableAPI extends UsosUserAPIDefinition implements UsosTimeT
     @Override
     public List<UsosTimeTableActivity> courseEditions(String courseEditionIds, boolean partial, LocalDate start, int days) {
         return Arrays.asList(request(requestFactory.get("services/tt/course_editions",
-                        CollectionUtils.mergeMaps(Map.of("course_edition_ids", List.of(courseEditionIds), "partial", List.of(String.valueOf(partial))),
+                        CollectionUtils.mergeMaps(Map.of(
+                                        "course_edition_ids", List.of(courseEditionIds),
+                                        "partial", List.of(String.valueOf(partial)
+                                        )),
                                 getTimeTableParams(start, days))),
                 UsosTimeTableActivity[].class));
     }
@@ -212,7 +217,10 @@ public class UsosTimeTableAPI extends UsosUserAPIDefinition implements UsosTimeT
     @Override
     public List<UsosTimeTableActivity> courseEditions(String courseEditionIds, boolean partial, LocalDate start) {
         return Arrays.asList(request(requestFactory.get("services/tt/course_editions",
-                        CollectionUtils.mergeMaps(Map.of("course_edition_ids", List.of(courseEditionIds), "partial", List.of(String.valueOf(partial))),
+                        CollectionUtils.mergeMaps(Map.of(
+                                        "course_edition_ids", List.of(courseEditionIds),
+                                        "partial", List.of(String.valueOf(partial)
+                                        )),
                                 getTimeTableParams(start, null))),
                 UsosTimeTableActivity[].class));
     }
@@ -220,7 +228,10 @@ public class UsosTimeTableAPI extends UsosUserAPIDefinition implements UsosTimeT
     @Override
     public List<UsosTimeTableActivity> courseEditions(String courseEditionIds, boolean partial, int days) {
         return Arrays.asList(request(requestFactory.get("services/tt/course_editions",
-                        CollectionUtils.mergeMaps(Map.of("course_edition_ids", List.of(courseEditionIds), "partial", List.of(String.valueOf(partial))),
+                        CollectionUtils.mergeMaps(Map.of(
+                                        "course_edition_ids", List.of(courseEditionIds),
+                                        "partial", List.of(String.valueOf(partial)
+                                        )),
                                 getTimeTableParams(null, days))),
                 UsosTimeTableActivity[].class));
     }

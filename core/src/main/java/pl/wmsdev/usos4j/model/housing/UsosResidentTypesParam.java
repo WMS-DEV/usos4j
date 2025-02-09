@@ -8,6 +8,7 @@ import pl.wmsdev.usos4j.model.common.UsosParams;
 public record UsosResidentTypesParam(String residentTypeIds) implements UsosParams {
 
     public static UsosResidentTypesParamBuilder builder(String... residentTypeIds) {
-        return new UsosResidentTypesParamBuilder().residentTypeIds(FieldSelector.from(residentTypeIds).getSelectedFields());
+        return new UsosResidentTypesParamBuilder().residentTypeIds(FieldSelector.from(residentTypeIds)
+                .getSelectedFields());
     }
 }

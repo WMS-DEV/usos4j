@@ -3,7 +3,6 @@ package pl.wmsdev.usos4j.model.grades;
 import lombok.Builder;
 import pl.wmsdev.usos4j.model.common.FieldSelector;
 import pl.wmsdev.usos4j.model.common.UsosParams;
-import pl.wmsdev.usos4j.utils.StringUtils;
 
 @Builder
 public record UsosGradeTypesParam(String gradeTypeIds) implements UsosParams {

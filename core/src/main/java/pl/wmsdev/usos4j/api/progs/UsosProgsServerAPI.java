@@ -6,11 +6,11 @@ import java.util.Map;
 
 public interface UsosProgsServerAPI {
 
-	UsosProgramme programme(UsosProgrammeParam params);
+    UsosProgramme programme(UsosProgrammeParam params);
 
-	Map<String, UsosProgramme> programmes(UsosProgrammesParam params);
+    Map<String, UsosProgramme> programmes(UsosProgrammesParam params);
 
-	UsosStage stage(UsosStageParam params);
+    UsosStage stage(UsosStageParam params);
 
-	UsosProgrammeSearchResult search(UsosProgrammeSearchParam params);
+    UsosProgrammeSearchResult search(UsosProgrammeSearchParam params);
 }

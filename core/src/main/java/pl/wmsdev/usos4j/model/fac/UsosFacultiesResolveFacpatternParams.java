@@ -1,9 +1,9 @@
 package pl.wmsdev.usos4j.model.fac;
 
-import pl.wmsdev.usos4j.model.common.UsosParams;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import pl.wmsdev.usos4j.model.common.UsosParams;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

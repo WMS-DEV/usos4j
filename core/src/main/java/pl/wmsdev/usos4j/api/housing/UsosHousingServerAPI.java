@@ -7,15 +7,26 @@ import java.util.Map;
 
 public interface UsosHousingServerAPI {
     List<UsosAllocationPeriod> allocationPeriodIndex();
+
     Map<String, UsosAllocationPeriod> allocationPeriods(UsosAllocationPeriodsParam params);
+
     Map<String, UsosDormitory> dormitories(UsosDormitoriesParam params);
+
     UsosDormitory dormitory(UsosDormitoryParam params);
+
     List<UsosDormitory> dormitoryIndex();
+
     UsosDormroomType dormroomType(UsosDormroomTypeParam params);
+
     List<UsosDormroomType> dormroomTypeIndex();
+
     Map<String, UsosDormroomType> dormroomTypes(UsosDormroomTypesParam params);
+
     UsosResidence residentType(UsosResidentTypeParam params);
+
     List<UsosResidentType> residentTypeIndex();
+
     Map<String, UsosResidentType> residentTypes(UsosResidentTypesParam params);
+
     UsosAllocationPeriod allocationPeriod(UsosAllocationPeriodParam params);
 }

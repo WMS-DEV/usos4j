@@ -8,6 +8,7 @@ import java.util.List;
 public interface UsosPlacementTestsServerAPI {
 
     UsosPlacementTest test(UsosPlacementTestParams params);
+
     List<String> testsIndex();
 
 }

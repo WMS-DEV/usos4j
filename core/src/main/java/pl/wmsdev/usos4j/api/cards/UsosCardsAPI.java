@@ -22,7 +22,8 @@ public class UsosCardsAPI extends UsosUserAPIDefinition {
     }
 
     public UsosCardsMcard mcard() {
-        return requestWithAccessToken(requestFactory.get("services/cards/mcard", Map.of("fields", List.of("why_cannot_order", "why_cannot_revoke", "orders"))),
+        return requestWithAccessToken(requestFactory.get("services/cards/mcard",
+                        Map.of("fields", List.of("why_cannot_order", "why_cannot_revoke", "orders"))),
                 UsosCardsMcard.class);
     }
 

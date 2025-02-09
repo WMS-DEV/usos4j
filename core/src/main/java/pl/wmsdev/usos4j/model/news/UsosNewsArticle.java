@@ -8,6 +8,7 @@ public record UsosNewsArticle(String id, UsosLocalizedString author, String publ
                               UsosLocalizedString headlineHtml, UsosLocalizedString contentHtml, String expiryDate,
                               String category, String faculty, Map<String, String> imageUrls,
                               UsosLocalizedString imageDescription, UsosNewsEvent event) {
-    private record UsosNewsEvent(String startDate, String endDate, String city, String address, Float geoLat, Float geoLong) {
+    private record UsosNewsEvent(String startDate, String endDate, String city, String address, Float geoLat,
+                                 Float geoLong) {
     }
 }

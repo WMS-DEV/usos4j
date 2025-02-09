@@ -4,10 +4,10 @@ import com.github.scribejava.core.oauth.OAuth10aService;
 import pl.wmsdev.usos4j.client.ScribeOAuthRequestFactory;
 import pl.wmsdev.usos4j.client.UsosUserAPIDefinition;
 import pl.wmsdev.usos4j.docs.NotTested;
+import pl.wmsdev.usos4j.docs.NotTestedReason;
 import pl.wmsdev.usos4j.model.auth.UsosAccessToken;
 import pl.wmsdev.usos4j.model.phones.UsosPhonesPhoneNumber;
 import pl.wmsdev.usos4j.model.phones.UsosPhonesPhoneType;
-import pl.wmsdev.usos4j.docs.NotTestedReason;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,9 @@ public class UsosPhonesAPI extends UsosUserAPIDefinition implements UsosPhonesSe
 
     @Override
     public UsosPhonesPhoneType phoneType(String id) {
-        return request(requestFactory.get("services/phones/phone_type", Map.of("id", List.of(id), "fields", List.of("id", "description"))), UsosPhonesPhoneType.class);
+        return request(requestFactory.get("services/phones/phone_type",
+                        Map.of("id", List.of(id), "fields", List.of("id", "description"))),
+                UsosPhonesPhoneType.class);
     }
 
     public UsosPhonesPhoneNumber phoneNumber(String phoneId) {

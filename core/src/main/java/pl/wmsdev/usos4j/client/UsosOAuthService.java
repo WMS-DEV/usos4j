@@ -13,13 +13,15 @@ import java.util.concurrent.ExecutionException;
 
 public class UsosOAuthService extends OAuth10aService {
 
-    public UsosOAuthService(DefaultApi10a api, String apiKey, String apiSecret, String callback, String scope, OutputStream debugStream, String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
+    public UsosOAuthService(DefaultApi10a api, String apiKey, String apiSecret,
+                            String callback, String scope, OutputStream debugStream,
+                            String userAgent, HttpClientConfig httpClientConfig, HttpClient httpClient) {
         super(api, apiKey, apiSecret, callback, scope, debugStream, userAgent, httpClientConfig, httpClient);
     }
 
     @Override
     public Response execute(OAuthRequest request) throws InterruptedException, ExecutionException, IOException {
-        if(request.getOauthParameters().isEmpty()) {
+        if (request.getOauthParameters().isEmpty()) {
             addOAuthParams(request, "");
             appendSignature(request);
         }

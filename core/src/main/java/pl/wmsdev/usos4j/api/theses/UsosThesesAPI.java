@@ -25,7 +25,7 @@ public class UsosThesesAPI extends UsosUserAPIDefinition {
 
     public UsosThesesSearchHistoryAffect searchHistoryAffect(UsosThesesSearchHistoryAffectParams params) {
         return requestWithAccessToken(requestFactory.get(
-            "services/theses/search_history_affect", params
+                "services/theses/search_history_affect", params
         ), UsosThesesSearchHistoryAffect.class);
     }
 

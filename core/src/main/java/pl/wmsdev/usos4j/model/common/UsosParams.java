@@ -17,22 +17,27 @@ public interface UsosParams {
         Map<String, Collection<String>> params = Arrays.stream(getClass().getDeclaredFields())
                 .filter(this::nonNullField)
                 .collect(Collectors.toMap(field -> StringUtils.camelToSnakeCase(field.getName()), this::extractParam));
-        if(fieldSelector != null) params.put("fields", List.of(fieldSelector.getSelectedFields()));
+        if (fieldSelector != null) params.put("fields", List.of(fieldSelector.getSelectedFields()));
         return params;
     }
 
     private Collection<String> extractParam(Field field) {
         try {
             Collection<String> param;
-            if(Collection.class.isAssignableFrom(field.getDeclaringClass())) {
+            if (Collection.class.isAssignableFrom(field.getDeclaringClass())) {
                 Collection<?> objectParam = (Collection<?>) field.get(this);
-                param = objectParam.stream().map(object -> object.getClass().isEnum() ? object.toString().toLowerCase() : object.toString()).toList();
-            } else if(field.getDeclaringClass().isArray()) {
+                param = objectParam.stream()
+                        .map(object -> object.getClass().isEnum() ? object.toString().toLowerCase() : object.toString())
+                        .toList();
+            } else if (field.getDeclaringClass().isArray()) {
                 Object[] objectParam = toObjectArray(field.get(this));
-                param = Arrays.stream(objectParam).map(object -> object.getClass().isEnum() ? object.toString().toLowerCase() : object.toString()).toList();
+                param = Arrays.stream(objectParam)
+                        .map(object -> object.getClass().isEnum() ? object.toString().toLowerCase() : object.toString())
+                        .toList();
             } else {
                 Object objectParam = field.get(this);
-                param = List.of(objectParam.getClass().isEnum() ? objectParam.toString().toLowerCase() : objectParam.toString());
+                param = List.of(objectParam.getClass().isEnum() ? objectParam.toString()
+                        .toLowerCase() : objectParam.toString());
             }
             return param;
         } catch (IllegalAccessException e) {
@@ -50,13 +55,14 @@ public interface UsosParams {
     }
 
     private static Object[] toObjectArray(Object arrayObject) {
-        if(!arrayObject.getClass().isArray()) {
+        if (!arrayObject.getClass().isArray()) {
             throw new IllegalArgumentException("Object has to be an array");
         }
         int length = Array.getLength(arrayObject);
         Object[] array = new Object[length];
-        for(int i = 0; i < length; i++)
+        for (int i = 0; i < length; i++) {
             array[i] = Array.get(arrayObject, i);
+        }
         return array;
     }
 

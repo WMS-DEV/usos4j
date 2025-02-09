@@ -7,7 +7,8 @@ import pl.wmsdev.usos4j.model.common.UsosParams;
 @Builder
 public record UsosDormroomTypesParam(String dormroomTypeIds) implements UsosParams {
 
-    public static UsosDormroomTypesParamBuilder builder(String... dormroomTypeIds){
-        return new UsosDormroomTypesParamBuilder().dormroomTypeIds(FieldSelector.from(dormroomTypeIds).getSelectedFields());
+    public static UsosDormroomTypesParamBuilder builder(String... dormroomTypeIds) {
+        return new UsosDormroomTypesParamBuilder().dormroomTypeIds(FieldSelector.from(dormroomTypeIds)
+                .getSelectedFields());
     }
 }

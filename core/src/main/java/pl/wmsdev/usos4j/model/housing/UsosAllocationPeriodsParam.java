@@ -6,7 +6,7 @@ import pl.wmsdev.usos4j.model.common.UsosParams;
 
 @Builder
 public record UsosAllocationPeriodsParam(String allocationPeriodIds) implements UsosParams {
-    public static UsosAllocationPeriodsParamBuilder builder(String... allocationPeriodIds){
+    public static UsosAllocationPeriodsParamBuilder builder(String... allocationPeriodIds) {
         return new UsosAllocationPeriodsParamBuilder().allocationPeriodIds(
                 FieldSelector.from(allocationPeriodIds).getSelectedFields());
     }

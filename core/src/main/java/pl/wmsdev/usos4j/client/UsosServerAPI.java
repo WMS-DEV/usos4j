@@ -1,23 +1,22 @@
 package pl.wmsdev.usos4j.client;
 
+import lombok.RequiredArgsConstructor;
 import pl.wmsdev.usos4j.api.apiref.UsosApiRefAPI;
 import pl.wmsdev.usos4j.api.apisrv.UsosApiSrvAPI;
 import pl.wmsdev.usos4j.api.courses.UsosCoursesServerAPI;
 import pl.wmsdev.usos4j.api.fac.UsosFacultiesServerAPI;
 import pl.wmsdev.usos4j.api.feedback.UsosFeedbackServerAPI;
+import pl.wmsdev.usos4j.api.generic.UsosGenericServerAPI;
 import pl.wmsdev.usos4j.api.geo.UsosGeoServerAPI;
 import pl.wmsdev.usos4j.api.grades.UsosGradesServerAPI;
 import pl.wmsdev.usos4j.api.groups.UsosGroupsServerAPI;
-import pl.wmsdev.usos4j.api.housing.UsosHousingAPI;
 import pl.wmsdev.usos4j.api.housing.UsosHousingServerAPI;
 import pl.wmsdev.usos4j.api.mailing.UsosMailingServerAPI;
-import pl.wmsdev.usos4j.api.generic.UsosGenericServerAPI;
 import pl.wmsdev.usos4j.api.phones.UsosPhonesServerAPI;
 import pl.wmsdev.usos4j.api.plctests.UsosPlacementTestsServerAPI;
 import pl.wmsdev.usos4j.api.progs.UsosProgsServerAPI;
 import pl.wmsdev.usos4j.api.terms.UsosTermsAPI;
 import pl.wmsdev.usos4j.api.timetable.UsosTimeTableServerAPI;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class UsosServerAPI {
@@ -103,7 +102,7 @@ public class UsosServerAPI {
         return usosGeoServerAPI;
     }
 
-    public UsosHousingServerAPI housing(){
+    public UsosHousingServerAPI housing() {
         return usosHousingServerAPI;
     }
 }

@@ -2,9 +2,9 @@ package pl.wmsdev.usos4j.client;
 
 import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Verb;
+import lombok.RequiredArgsConstructor;
 import pl.wmsdev.usos4j.model.common.FieldSelector;
 import pl.wmsdev.usos4j.model.common.UsosParams;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -43,7 +43,8 @@ public class ScribeOAuthRequestFactory {
 
     private String createUrl(String url, Map<String, Collection<String>> params) {
         return BASE_URL + url + "?" + params.entrySet().stream()
-                .map(entry -> entry.getKey() + "=" + entry.getValue().stream().distinct().collect(Collectors.joining("|")))
+                .map(entry -> entry.getKey() + "=" + entry.getValue().stream().distinct()
+                        .collect(Collectors.joining("|")))
                 .collect(Collectors.joining("&"));
     }
 

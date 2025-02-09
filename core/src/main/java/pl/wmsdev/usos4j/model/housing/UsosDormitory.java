@@ -7,4 +7,5 @@ import pl.wmsdev.usos4j.model.common.UsosObject;
 import java.util.List;
 
 public record UsosDormitory(String id, UsosLocalizedString name, UsosLocalizedString shortName,
-                            @JsonAlias("can_i_manage")Boolean canIManage, List<UsosDormroom> dormrooms) implements UsosObject {}
+                            @JsonAlias("can_i_manage") Boolean canIManage,
+                            List<UsosDormroom> dormrooms) implements UsosObject {}

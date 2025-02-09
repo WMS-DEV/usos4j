@@ -19,15 +19,15 @@ public class UsosHousingAPI extends UsosUserAPIDefinition implements UsosHousing
     }
 
     @Beta
-    public Map<String, UsosDormitory> dormitories(UsosDormitoriesParam params){
+    public Map<String, UsosDormitory> dormitories(UsosDormitoriesParam params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/housing/dormitories", params,
                 FieldSelector.fromRequest(UsosDormitory.class)
-        ),new TypeReference<>() {});
+        ), new TypeReference<>() {});
     }
 
     @Beta
-    public UsosDormroomType dormroomType(UsosDormroomTypeParam params){
+    public UsosDormroomType dormroomType(UsosDormroomTypeParam params) {
         return request(requestFactory.get(
                 "services/housing/dormroom_type", params,
                 FieldSelector.fromRequest(UsosDormroomType.class)
@@ -36,7 +36,7 @@ public class UsosHousingAPI extends UsosUserAPIDefinition implements UsosHousing
 
 
     @Beta
-    public UsosResidence residentType(UsosResidentTypeParam params){
+    public UsosResidence residentType(UsosResidentTypeParam params) {
         return request(requestFactory.get(
                 "services/housing/resident_type", params,
                 FieldSelector.fromRequest(UsosResidentType.class)
@@ -44,15 +44,15 @@ public class UsosHousingAPI extends UsosUserAPIDefinition implements UsosHousing
     }
 
     @Beta
-    public List<UsosDormroomType> dormroomTypeIndex(){
+    public List<UsosDormroomType> dormroomTypeIndex() {
         return request(requestFactory.get(
                 "services/housing/dormroom_type_index",
                 FieldSelector.fromRequest(UsosDormroomType.class)
-        ),new TypeReference<>() {});
+        ), new TypeReference<>() {});
     }
 
     @Beta
-    public Map<String, UsosAllocationPeriod> allocationPeriods(UsosAllocationPeriodsParam params){
+    public Map<String, UsosAllocationPeriod> allocationPeriods(UsosAllocationPeriodsParam params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/housing/allocation_periods", params,
                 FieldSelector.fromRequest(UsosAllocationPeriod.class)
@@ -60,31 +60,31 @@ public class UsosHousingAPI extends UsosUserAPIDefinition implements UsosHousing
     }
 
     @Beta
-    public Map<String, UsosDormroomType> dormroomTypes(UsosDormroomTypesParam params){
+    public Map<String, UsosDormroomType> dormroomTypes(UsosDormroomTypesParam params) {
         return request(requestFactory.get(
                 "services/housing/dormroom_types", params,
                 FieldSelector.fromRequest(UsosDormroomType.class)
-        ),new TypeReference<>() {});
+        ), new TypeReference<>() {});
     }
 
     @Beta
-    public Map<String, UsosResidentType> residentTypes(UsosResidentTypesParam params){
+    public Map<String, UsosResidentType> residentTypes(UsosResidentTypesParam params) {
         return request(requestFactory.get(
                 "services/housing/resident_types", params,
                 FieldSelector.fromRequest(UsosResidentType.class)
-        ),new TypeReference<>() {});
+        ), new TypeReference<>() {});
     }
 
     @Beta
-    public UsosDormitory dormitory(UsosDormitoryParam params){
+    public UsosDormitory dormitory(UsosDormitoryParam params) {
         return requestWithAccessToken(requestFactory.get(
                 "services/housing/dormitory", params,
                 FieldSelector.fromRequest(UsosDormitory.class)
-        ),UsosDormitory.class);
+        ), UsosDormitory.class);
     }
 
     @Beta
-    public List<UsosDormitory> dormitoryIndex(){
+    public List<UsosDormitory> dormitoryIndex() {
         return requestWithAccessToken(requestFactory.get(
                 "services/housing/dormitory_index",
                 FieldSelector.fromRequest(UsosDormitory.class)
@@ -92,7 +92,7 @@ public class UsosHousingAPI extends UsosUserAPIDefinition implements UsosHousing
     }
 
     @Beta
-    public List<UsosResidentType> residentTypeIndex(){
+    public List<UsosResidentType> residentTypeIndex() {
         return requestWithAccessToken(requestFactory.get(
                 "services/housing/resident_type_index",
                 FieldSelector.fromRequest(UsosResidentType.class)
@@ -100,7 +100,7 @@ public class UsosHousingAPI extends UsosUserAPIDefinition implements UsosHousing
     }
 
     @Beta
-    public List<UsosAllocationPeriod> allocationPeriodIndex(){
+    public List<UsosAllocationPeriod> allocationPeriodIndex() {
         return requestWithAccessToken(requestFactory.get(
                 "services/housing/allocation_period_index",
                 FieldSelector.fromRequest(UsosAllocationPeriod.class)
@@ -108,7 +108,7 @@ public class UsosHousingAPI extends UsosUserAPIDefinition implements UsosHousing
     }
 
     @Beta
-    public UsosAllocationPeriod allocationPeriod(UsosAllocationPeriodParam params){
+    public UsosAllocationPeriod allocationPeriod(UsosAllocationPeriodParam params) {
         return request(requestFactory.get(
                 "services/housing/allocation_period", params,
                 FieldSelector.fromRequest(UsosAllocationPeriod.class)

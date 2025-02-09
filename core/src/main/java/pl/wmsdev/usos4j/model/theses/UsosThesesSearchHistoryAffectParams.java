@@ -1,7 +1,7 @@
 package pl.wmsdev.usos4j.model.theses;
 
-import pl.wmsdev.usos4j.model.common.UsosParams;
 import lombok.Builder;
+import pl.wmsdev.usos4j.model.common.UsosParams;
 
 @Builder
 public record UsosThesesSearchHistoryAffectParams(String thsId) implements UsosParams {

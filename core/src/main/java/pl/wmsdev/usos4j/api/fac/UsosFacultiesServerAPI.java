@@ -6,12 +6,10 @@ import pl.wmsdev.usos4j.client.ScribeOAuthRequestFactory;
 import pl.wmsdev.usos4j.client.UsosServerAPIDefinition;
 import pl.wmsdev.usos4j.docs.InProgress;
 import pl.wmsdev.usos4j.model.common.FieldSelector;
-import pl.wmsdev.usos4j.model.common.UsosObject;
 import pl.wmsdev.usos4j.model.fac.*;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

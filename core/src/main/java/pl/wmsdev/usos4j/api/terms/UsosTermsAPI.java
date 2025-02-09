@@ -17,7 +17,7 @@ public class UsosTermsAPI extends UsosServerAPIDefinition {
 
     public List<UsosTerm> search(UsosTermsSearchParams params) {
         return request(requestFactory.get(
-                "services/terms/search", params),
+                        "services/terms/search", params),
                 new TypeReference<>() {});
     }
 
@@ -33,7 +33,7 @@ public class UsosTermsAPI extends UsosServerAPIDefinition {
 
     public List<UsosTerm> termsIndex(UsosTermIndexParams params) {
         return request(requestFactory.get(
-                "services/terms/terms_index", params),
+                        "services/terms/terms_index", params),
                 new TypeReference<>() {});
     }
 }

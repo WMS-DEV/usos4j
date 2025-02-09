@@ -12,7 +12,6 @@ import com.tngtech.archunit.lang.syntax.elements.GivenClassesConjunction;
 import org.slf4j.Logger;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 
 @AnalyzeClasses(packages = "pl.wmsdev.usos4j")
 public class UsosApiArchTest {
@@ -38,12 +37,18 @@ public class UsosApiArchTest {
                             var badMethods = javaClass.getMethods()
                                     .stream()
                                     .filter(method -> method.getModifiers().contains(JavaModifier.PUBLIC))
-                                    .filter(method -> !(method.getRawReturnType().isPrimitive() || method.getRawReturnType().getPackageName().contains("pl.wmsdev.usos4j")
-                                            || method.getRawReturnType().getSimpleName().equals("void") || method.getRawReturnType().getPackageName().startsWith("java.")))
+                                    .filter(method -> !(method.getRawReturnType()
+                                            .isPrimitive() || method.getRawReturnType().getPackageName()
+                                            .contains("pl.wmsdev.usos4j")
+                                            || method.getRawReturnType().getSimpleName()
+                                            .equals("void") || method.getRawReturnType().getPackageName()
+                                            .startsWith("java.")))
                                     .toList();
                             for (var method : badMethods) {
                                 message.append("%s in %s return %s which resides in package %s but should reside in %s instead "
-                                        .formatted(method.getName(), javaClass.getSimpleName(), method.getReturnType().getName(), method.getRawReturnType().getPackageName(), "pl.wmsdev.usos4j.*"));
+                                        .formatted(method.getName(), javaClass.getSimpleName(), method.getReturnType()
+                                                .getName(), method.getRawReturnType()
+                                                .getPackageName(), "pl.wmsdev.usos4j.*"));
                             }
                             conditionEvents.add(new SimpleConditionEvent(javaClass, badMethods.isEmpty(), message.toString()));
                         }
@@ -68,12 +73,17 @@ public class UsosApiArchTest {
                             StringBuilder message = new StringBuilder();
                             var badMethods = javaClass.getMethods()
                                     .stream()
-                                    .filter(method -> !(method.getRawReturnType().isPrimitive() || method.getRawReturnType().getSimpleName().startsWith("Usos")
-                                            || method.getRawReturnType().getSimpleName().equals("void") || method.getRawReturnType().getPackageName().startsWith("java.")))
+                                    .filter(method -> !(method.getRawReturnType()
+                                            .isPrimitive() || method.getRawReturnType().getSimpleName()
+                                            .startsWith("Usos")
+                                            || method.getRawReturnType().getSimpleName()
+                                            .equals("void") || method.getRawReturnType().getPackageName()
+                                            .startsWith("java.")))
                                     .toList();
                             for (var method : badMethods) {
                                 message.append("%s in %s return %s which doesn't have prefix Usos "
-                                        .formatted(method.getName(), javaClass.getSimpleName(), method.getReturnType().getName()));
+                                        .formatted(method.getName(), javaClass.getSimpleName(), method.getReturnType()
+                                                .getName()));
                             }
                             conditionEvents.add(new SimpleConditionEvent(javaClass, badMethods.isEmpty(), message.toString()));
                         }

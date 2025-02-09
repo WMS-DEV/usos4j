@@ -1,7 +1,7 @@
 package pl.wmsdev.usos4j.model.fac;
 
-import pl.wmsdev.usos4j.model.common.UsosParams;
 import lombok.Builder;
+import pl.wmsdev.usos4j.model.common.UsosParams;
 
 @Builder
 public record UsosFacultiesFactsheetGetParams(String facId) implements UsosParams {

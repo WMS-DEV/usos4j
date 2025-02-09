@@ -2,6 +2,10 @@ package pl.wmsdev.usos4j.client;
 
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.oauth.OAuth10aService;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Singular;
+import lombok.SneakyThrows;
 import pl.wmsdev.usos4j.api.apiref.UsosApiRefAPI;
 import pl.wmsdev.usos4j.api.apisrv.UsosApiSrvAPI;
 import pl.wmsdev.usos4j.api.calendar.UsosCalendarAPI;
@@ -10,14 +14,14 @@ import pl.wmsdev.usos4j.api.courses.UsosCoursesAPI;
 import pl.wmsdev.usos4j.api.credits.UsosCreditsAPI;
 import pl.wmsdev.usos4j.api.fac.UsosFacultiesServerAPI;
 import pl.wmsdev.usos4j.api.feedback.UsosFeedbackAPI;
+import pl.wmsdev.usos4j.api.generic.UsosGenericServerAPI;
+import pl.wmsdev.usos4j.api.generic.UsosGenericUserAPI;
 import pl.wmsdev.usos4j.api.geo.UsosGeoAPI;
 import pl.wmsdev.usos4j.api.grades.UsosGradesAPI;
 import pl.wmsdev.usos4j.api.groups.UsosGroupsAPI;
 import pl.wmsdev.usos4j.api.housing.UsosHousingAPI;
 import pl.wmsdev.usos4j.api.mailing.UsosMailingAPI;
 import pl.wmsdev.usos4j.api.mailing.UsosMailingServerAPI;
-import pl.wmsdev.usos4j.api.generic.UsosGenericServerAPI;
-import pl.wmsdev.usos4j.api.generic.UsosGenericUserAPI;
 import pl.wmsdev.usos4j.api.news.UsosNewsAPI;
 import pl.wmsdev.usos4j.api.payments.UsosPaymentsAPI;
 import pl.wmsdev.usos4j.api.phones.UsosPhonesAPI;
@@ -31,10 +35,6 @@ import pl.wmsdev.usos4j.api.timetable.UsosTimeTableAPI;
 import pl.wmsdev.usos4j.model.auth.UsosAccessToken;
 import pl.wmsdev.usos4j.model.auth.UsosRequestToken;
 import pl.wmsdev.usos4j.model.auth.UsosScope;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
-import lombok.SneakyThrows;
 
 import java.util.Collections;
 import java.util.Set;
@@ -63,7 +63,7 @@ public class Usos {
     }
 
     public static Usos serverOnly(String baseUrl, String consumerKey, String consumerSecret) {
-        return new Usos(baseUrl, "", consumerKey, consumerSecret,false, Collections.emptySet());
+        return new Usos(baseUrl, "", consumerKey, consumerSecret, false, Collections.emptySet());
     }
 
     @SneakyThrows

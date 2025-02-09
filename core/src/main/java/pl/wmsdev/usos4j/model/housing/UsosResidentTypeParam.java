@@ -6,7 +6,7 @@ import pl.wmsdev.usos4j.model.common.UsosParams;
 @Builder
 public record UsosResidentTypeParam(String residentTypeId) implements UsosParams {
 
-    public static UsosResidentTypeParamBuilder builder(String residentTypeId){
+    public static UsosResidentTypeParamBuilder builder(String residentTypeId) {
         return new UsosResidentTypeParamBuilder().residentTypeId(residentTypeId);
     }
 }

@@ -10,4 +10,5 @@ public record UsosGroup(Integer courseUnitId, Integer groupNumber, UsosLocalized
                         String classTypeId, String groupUrl, String courseId, UsosLocalizedString courseName,
                         String courseHomepageUrl, String courseProfileUrl, Boolean courseIsCurrentlyConducted,
                         String courseFacId, String courseLangId, String termId, List<UsosGroupUser> lecturers,
-                        List<UsosGroupUser> participants, @ExcludeField UsosGroupRole relationshipType) implements UsosCommonObject {}
+                        List<UsosGroupUser> participants,
+                        @ExcludeField UsosGroupRole relationshipType) implements UsosCommonObject {}
