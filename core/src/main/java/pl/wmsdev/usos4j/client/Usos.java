@@ -29,6 +29,7 @@ import pl.wmsdev.usos4j.api.photos.UsosPhotosAPI;
 import pl.wmsdev.usos4j.api.plctests.UsosPlacementTestsAPI;
 import pl.wmsdev.usos4j.api.progs.UsosProgsAPI;
 import pl.wmsdev.usos4j.api.registrations.UsosRegistrationsAPI;
+import pl.wmsdev.usos4j.api.surveys.UsosSurveysAPI;
 import pl.wmsdev.usos4j.api.terms.UsosTermsAPI;
 import pl.wmsdev.usos4j.api.theses.UsosThesesAPI;
 import pl.wmsdev.usos4j.api.timetable.UsosTimeTableAPI;
@@ -102,7 +103,8 @@ public class Usos {
                 new UsosGradesAPI(oAuthService, requestFactory, accessToken),
                 new UsosProgsAPI(oAuthService, requestFactory, accessToken),
                 new UsosGeoAPI(oAuthService, requestFactory, accessToken),
-                new UsosHousingAPI(oAuthService, requestFactory, accessToken));
+                new UsosHousingAPI(oAuthService, requestFactory, accessToken),
+                new UsosSurveysAPI(oAuthService, requestFactory, accessToken));
     }
 
     public UsosServerAPI getServerApi() {

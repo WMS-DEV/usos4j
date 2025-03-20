@@ -19,6 +19,7 @@ import pl.wmsdev.usos4j.api.photos.UsosPhotosAPI;
 import pl.wmsdev.usos4j.api.plctests.UsosPlacementTestsAPI;
 import pl.wmsdev.usos4j.api.progs.UsosProgsAPI;
 import pl.wmsdev.usos4j.api.registrations.UsosRegistrationsAPI;
+import pl.wmsdev.usos4j.api.surveys.UsosSurveysAPI;
 import pl.wmsdev.usos4j.api.theses.UsosThesesAPI;
 import pl.wmsdev.usos4j.api.timetable.UsosTimeTableAPI;
 
@@ -45,6 +46,7 @@ public class UsosUserAPI {
     private final UsosProgsAPI usosProgsAPI;
     private final UsosGeoAPI usosGeoAPI;
     private final UsosHousingAPI usosHousingAPI;
+    private final UsosSurveysAPI usosSurveysAPI;
 
     public UsosUsersAPI users() {
         return userApi;
@@ -133,5 +135,9 @@ public class UsosUserAPI {
 
     public UsosHousingAPI housing() {
         return usosHousingAPI;
+    }
+
+    public UsosSurveysAPI surveys() {
+        return usosSurveysAPI;
     }
 }
