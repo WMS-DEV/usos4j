@@ -63,6 +63,7 @@ The library supports
 - plctests
 - progs
 - registrations
+- surveys
 - terms
 - theses
 - timetable
