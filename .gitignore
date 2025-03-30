@@ -5,10 +5,11 @@ target/
 **/.mvn/
 
 ### IntelliJ IDEA ###
-../usos4j-alpha/.idea/
+../usos4j-internal/.idea/
 *.iws
 *.iml
 *.ipr
+.idea
 
 ### Eclipse ###
 .apt_generated

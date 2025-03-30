@@ -43,6 +43,7 @@ public class UsosRegistrationsAPITest extends UsosAPIBaseTest{
     }
 
     @Test
+    @Disabled("Registration not active")
     void registration() {
         log(userApi.registrations().registration(UsosRegistrationParams.builder("W04-IST-SI-1-23/24Z").build()));
     }

@@ -1,6 +1,5 @@
 package pl.wmsdev.usos4j.model.surveys;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import pl.wmsdev.usos4j.model.common.UsosLocalizedString;
 import pl.wmsdev.usos4j.model.common.UsosObject;
 import pl.wmsdev.usos4j.model.fac.UsosFaculty;
@@ -18,8 +17,8 @@ public record UsosSurveysSurvey2(
         String headlineHtml,
         String startDate,
         String endDate,
-        @JsonAlias("can_i_fill_out") Boolean canIFillOut,
-        @JsonAlias("did_i_fill_out") Boolean didIFillOut,
+        Boolean canIFillOut,
+        Boolean didIFillOut,
         UsosGroup group,
         List<UsosGroup> groupsConducted,
         UsosUser lecturer,
@@ -27,8 +26,8 @@ public record UsosSurveysSurvey2(
         UsosProgramme programme,
         Integer filledOutCount,
         Integer entitledCount,
-        @JsonAlias("can_i_view_results") Boolean canIViewResults,
-        @JsonAlias("why_cant_i_view_results") UsosLocalizedString whyCantIViewResults,
+        Boolean canIViewResults,
+        UsosLocalizedString whyCantIViewResults,
         List<UsosSurveysQuestion> questions,
         Boolean hasFinalComment
 ) implements UsosObject {
