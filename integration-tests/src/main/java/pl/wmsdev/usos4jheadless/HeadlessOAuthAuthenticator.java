@@ -10,8 +10,10 @@ import java.util.Map;
 @Slf4j
 public class HeadlessOAuthAuthenticator {
 
-    private final Map<String, HeadlessOauthVerifierExtractionStrategy> extractionStrategies =
-            Map.of("https://apps.usos.pwr.edu.pl/", new PWrOauthVerifierExtractionStrategy());
+    private final Map<String, HeadlessOauthVerifierExtractionStrategy> extractionStrategies = Map.of(
+            "https://apps.usos.pwr.edu.pl/", new PWrOauthVerifierExtractionStrategy(),
+            "https://apps.usos.pw.edu.pl/", new PwOAuthVerifierExtractionStrategy()
+    );
 
     public String authenticate(String authUrl, String login, String password) {
         ChromeOptions options = new ChromeOptions();
