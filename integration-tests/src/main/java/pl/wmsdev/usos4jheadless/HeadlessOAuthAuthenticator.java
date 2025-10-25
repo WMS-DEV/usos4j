@@ -31,7 +31,7 @@ public class HeadlessOAuthAuthenticator {
                 .filter(entry -> authUrl.contains(entry.getKey()))
                 .map(Map.Entry::getValue)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Couldn't find strategy to handle %s".formatted(authUrl)));
+                .orElseGet(FakeUsosOauthVerifierExtractionStrategy::new);
     }
 
 

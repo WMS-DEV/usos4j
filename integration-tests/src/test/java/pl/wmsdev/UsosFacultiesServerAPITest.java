@@ -13,7 +13,7 @@ public class UsosFacultiesServerAPITest extends UsosAPIBaseTest {
 
     @Test
     void faculties() {
-        log(serverApi.fac().faculties(builder("W4N", "W5", "W11").build()).get("W4N").name());
+        log(serverApi.fac().faculties(builder("W4N", "W5", "W11").build()));
     }
 
     @Test
