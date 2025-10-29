@@ -19,6 +19,7 @@ import pl.wmsdev.usos4j.api.generic.UsosGenericUserAPI;
 import pl.wmsdev.usos4j.api.geo.UsosGeoAPI;
 import pl.wmsdev.usos4j.api.grades.UsosGradesAPI;
 import pl.wmsdev.usos4j.api.groups.UsosGroupsAPI;
+import pl.wmsdev.usos4j.api.guide.UsosGuideAPI;
 import pl.wmsdev.usos4j.api.housing.UsosHousingAPI;
 import pl.wmsdev.usos4j.api.mailing.UsosMailingAPI;
 import pl.wmsdev.usos4j.api.mailing.UsosMailingServerAPI;
@@ -104,7 +105,8 @@ public class Usos {
                 new UsosProgsAPI(oAuthService, requestFactory, accessToken),
                 new UsosGeoAPI(oAuthService, requestFactory, accessToken),
                 new UsosHousingAPI(oAuthService, requestFactory, accessToken),
-                new UsosSurveysAPI(oAuthService, requestFactory, accessToken));
+                new UsosSurveysAPI(oAuthService, requestFactory, accessToken),
+                new UsosGuideAPI(oAuthService, requestFactory, accessToken));
     }
 
     public UsosServerAPI getServerApi() {

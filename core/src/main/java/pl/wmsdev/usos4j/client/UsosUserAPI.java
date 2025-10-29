@@ -10,6 +10,7 @@ import pl.wmsdev.usos4j.api.generic.UsosGenericUserAPI;
 import pl.wmsdev.usos4j.api.geo.UsosGeoAPI;
 import pl.wmsdev.usos4j.api.grades.UsosGradesAPI;
 import pl.wmsdev.usos4j.api.groups.UsosGroupsAPI;
+import pl.wmsdev.usos4j.api.guide.UsosGuideAPI;
 import pl.wmsdev.usos4j.api.housing.UsosHousingAPI;
 import pl.wmsdev.usos4j.api.mailing.UsosMailingAPI;
 import pl.wmsdev.usos4j.api.news.UsosNewsAPI;
@@ -47,6 +48,7 @@ public class UsosUserAPI {
     private final UsosGeoAPI usosGeoAPI;
     private final UsosHousingAPI usosHousingAPI;
     private final UsosSurveysAPI usosSurveysAPI;
+    private final UsosGuideAPI usosGuideAPI;
 
     public UsosUsersAPI users() {
         return userApi;
@@ -139,5 +141,9 @@ public class UsosUserAPI {
 
     public UsosSurveysAPI surveys() {
         return usosSurveysAPI;
+    }
+
+    public UsosGuideAPI guide() {
+        return usosGuideAPI;
     }
 }
