@@ -15,6 +15,7 @@
 	<description>Spring security demo for Usos4j</description>
 	<properties>
 		<java.version>17</java.version>
+		<jackson-bom.version>2.18.12</jackson-bom.version>
 	</properties>
 
 	<dependencies>
@@ -31,9 +32,9 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.33</version>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>9.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
