@@ -29,14 +29,3 @@ jobs:
         cache: maven
     - name: Build Spring Demo with Maven
       run: cd core && mvn -B install --file pom.xml && cd .. && cd spring-demo && mvn -B install --file pom.xml
-  cleanup:
-    permissions:
-      actions: write
-    needs: [spring-demo]
-    runs-on: ubuntu-latest
-    steps:
-    - name: Remove artifacts older than 1 day
-      uses: c-hive/gha-remove-artifacts@v1.2.0
-      with:
-        age: '1 day'
-
