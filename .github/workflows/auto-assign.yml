@@ -6,7 +6,14 @@ on:
 jobs:
   add-reviews:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      AUTHOR: ${{ github.event.pull_request.user.login }}
     steps:
-      - uses: kentaro-m/auto-assign-action@v1.2.5
-        with:
-          configuration-path: '.github/auto_assign_config.yml'
+      - name: Request review
+        run: |
+          reviewer=gniadeck
+          if [ "$AUTHOR" = "gniadeck" ]; then reviewer=pszumanski; fi
+          gh pr edit ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --add-reviewer "$reviewer"
