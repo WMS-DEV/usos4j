@@ -67,7 +67,7 @@ public class UsosGradesAPI extends UsosUserAPIDefinition implements UsosGradesSe
     @NotTested(reason = NotTestedReason.NO_ACCESS)
     public List<UsosGrade> latest(UsosLatestParam params) {
         return List.of(requestWithAccessToken(requestFactory.get(
-                "/services/grades/latest", params,
+                "services/grades/latest", params,
                 FieldSelector.fromRequest(UsosGrade.class)
         ), UsosGrade[].class));
     }
