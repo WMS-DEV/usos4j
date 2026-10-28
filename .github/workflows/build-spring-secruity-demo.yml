@@ -30,6 +30,8 @@ jobs:
     - name: Build Spring Security Demo with Maven
       run: cd core && mvn -B install --file pom.xml && cd .. && cd spring-security-demo && mvn -B install --file pom.xml
   cleanup:
+    permissions:
+      actions: write
     needs: [spring-security-demo]
     runs-on: ubuntu-latest
     steps:

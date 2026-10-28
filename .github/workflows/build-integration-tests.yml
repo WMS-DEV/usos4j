@@ -30,6 +30,8 @@ jobs:
     - name: Build integration tests with Maven
       run: cd core && mvn -B install --file pom.xml && cd .. && cd integration-tests && mvn -B install --file pom.xml -DskipTests
   cleanup:
+    permissions:
+      actions: write
     needs: [integration-tests]
     runs-on: ubuntu-latest
     steps:

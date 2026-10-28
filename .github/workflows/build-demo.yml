@@ -30,6 +30,8 @@ jobs:
     - name: Build demo with Maven
       run: cd core && mvn -B install --file pom.xml && cd .. && cd demo && mvn -B install --file pom.xml
   cleanup:
+    permissions:
+      actions: write
     needs: [demo]
     runs-on: ubuntu-latest
     steps:
