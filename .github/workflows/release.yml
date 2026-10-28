@@ -1,0 +1,112 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version part to increase (ignored when "version" is given)'
+        type: choice
+        options: [ patch, minor, major ]
+        default: patch
+      version:
+        description: 'Explicit version, e.g. 1.2.0 (optional)'
+        type: string
+        required: false
+      dry_run:
+        description: 'Only print the new version and the release notes, change nothing'
+        type: boolean
+        default: false
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  PUBLIC_REPO: WMS-DEV/usos4j
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Resolve versions
+        id: versions
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+          INPUT_BUMP: ${{ inputs.bump }}
+        run: |
+          current=$(sed -n '0,/<version>/s|.*<version>\(.*\)</version>.*|\1|p' core/pom.xml)
+          previous=$(gh api "repos/${PUBLIC_REPO}/releases/latest" --jq .tag_name)
+          if [ -n "$INPUT_VERSION" ]; then
+            new="$INPUT_VERSION"
+          else
+            IFS=. read -r major minor patch <<< "$current"
+            case "$INPUT_BUMP" in
+              major) new="$((major + 1)).0.0" ;;
+              minor) new="${major}.$((minor + 1)).0" ;;
+              *)     new="${major}.${minor}.$((patch + 1))" ;;
+            esac
+          fi
+          if ! [[ "$new" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::'$new' is not a valid x.y.z version"; exit 1
+          fi
+          if gh api "repos/${PUBLIC_REPO}/git/ref/tags/${new}" >/dev/null 2>&1; then
+            echo "::error::Tag ${new} already exists in ${PUBLIC_REPO}"; exit 1
+          fi
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          echo "previous=$previous" >> "$GITHUB_OUTPUT"
+          echo "new=$new" >> "$GITHUB_OUTPUT"
+          echo "Current: $current, previous release: $previous, new: $new"
+
+      - name: Bump version
+        if: ${{ !inputs.dry_run }}
+        run: |
+          old="${{ steps.versions.outputs.current }}"
+          new="${{ steps.versions.outputs.new }}"
+          for pom in core/pom.xml integration-tests/pom.xml; do
+            sed -i "0,/<version>${old}<\/version>/s//<version>${new}<\/version>/" "$pom"
+            grep -q "<version>${new}</version>" "$pom" || { echo "::error::Version not updated in $pom"; exit 1; }
+          done
+          git config user.name "WMS_BOT"
+          git config user.email "kontakt@wmsdev.pl"
+          git add core/pom.xml integration-tests/pom.xml
+          git commit -m "bump release version"
+          git push origin HEAD:main
+
+      - name: Wait for the code sync to the public repository
+        id: sync
+        if: ${{ !inputs.dry_run }}
+        run: |
+          internal_sha=$(git rev-parse HEAD)
+          for attempt in $(seq 1 60); do
+            public_sha=$(gh api "repos/${PUBLIC_REPO}/commits?per_page=20" \
+              --jq ".[] | select(.commit.message | contains(\"GitOrigin-RevId: ${internal_sha}\")) | .sha" | head -n1)
+            if [ -n "$public_sha" ]; then
+              echo "public_sha=$public_sha" >> "$GITHUB_OUTPUT"
+              echo "Synced as $public_sha"; exit 0
+            fi
+            echo "Waiting for ${internal_sha} to be mirrored ($attempt/60)..."; sleep 15
+          done
+          echo "::error::Commit ${internal_sha} was not mirrored to ${PUBLIC_REPO} in 15 minutes"; exit 1
+
+      - name: Generate release notes
+        run: |
+          head="${{ steps.sync.outputs.public_sha || 'main' }}"
+          .github/scripts/release-notes.sh "${{ steps.versions.outputs.previous }}" "$head" "${{ steps.versions.outputs.new }}" > release-notes.md
+          cat release-notes.md
+          cat release-notes.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Create release
+        if: ${{ !inputs.dry_run }}
+        run: |
+          gh release create "${{ steps.versions.outputs.new }}" \
+            --repo "${PUBLIC_REPO}" \
+            --target "${{ steps.sync.outputs.public_sha }}" \
+            --title "${{ steps.versions.outputs.new }}" \
+            --notes-file release-notes.md
