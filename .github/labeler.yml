@@ -1,0 +1,63 @@
+core:
+  - changed-files:
+      - any-glob-to-any-file: 'core/**'
+
+api:
+  - changed-files:
+      - any-glob-to-any-file: 'core/src/main/java/pl/wmsdev/usos4j/api/**'
+
+client:
+  - changed-files:
+      - any-glob-to-any-file: 'core/src/main/java/pl/wmsdev/usos4j/client/**'
+
+models:
+  - changed-files:
+      - any-glob-to-any-file: 'core/src/main/java/pl/wmsdev/usos4j/model/**'
+
+utilities:
+  - changed-files:
+      - any-glob-to-any-file: 'core/src/main/java/pl/wmsdev/usos4j/utils/**'
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file: '**/src/test/**'
+
+integration-tests:
+  - changed-files:
+      - any-glob-to-any-file: 'integration-tests/**'
+
+demos:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'demo/**'
+          - 'spring-demo/**'
+          - 'spring-security-demo/**'
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - 'docs/**'
+          - 'LICENSE'
+
+build:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/pom.xml'
+          - '**/.mvn/**'
+          - '**/mvnw'
+          - '**/mvnw.cmd'
+          - 'core/checkstyle.xml'
+
+java:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.java'
+          - '**/pom.xml'
+
+github_actions:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/**'
+          - '.github/labeler.yml'
+          - '.github/dependabot.yml'
