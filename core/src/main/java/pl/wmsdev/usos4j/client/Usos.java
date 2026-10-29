@@ -1,6 +1,7 @@
 package pl.wmsdev.usos4j.client;
 
 import com.github.scribejava.core.builder.ServiceBuilder;
+import com.github.scribejava.core.httpclient.HttpClient;
 import com.github.scribejava.core.oauth.OAuth10aService;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,10 +48,23 @@ public class Usos {
     private final OAuth10aService oAuthService;
     private final String baseUrl;
 
+    public Usos(String baseUrl, String callbackUrl, String consumerKey, String consumerSecret, boolean debug, Set<UsosScope> scopes) {
+        this(baseUrl, callbackUrl, consumerKey, consumerSecret, debug, scopes, null, null);
+    }
+
     @Builder
-    public Usos(String baseUrl, String callbackUrl, String consumerKey, String consumerSecret, boolean debug, @Singular Set<UsosScope> scopes) {
+    public Usos(String baseUrl, String callbackUrl, String consumerKey, String consumerSecret, boolean debug,
+                @Singular Set<UsosScope> scopes, UsosHttpConfig httpConfig, HttpClient httpClient) {
+        if (httpConfig != null && httpClient != null) {
+            throw new IllegalArgumentException("Use either httpConfig or httpClient; configure a custom client's timeouts on that client");
+        }
         var serviceBuilder = new ServiceBuilder(consumerKey)
                 .apiSecret(consumerSecret);
+        if (httpConfig != null) {
+            serviceBuilder.httpClient(httpConfig.createClient());
+            if (httpConfig.userAgent() != null) serviceBuilder.userAgent(httpConfig.userAgent());
+        }
+        if (httpClient != null) serviceBuilder.httpClient(httpClient);
         if (callbackUrlGiven(callbackUrl)) {
             serviceBuilder.callback(callbackUrl);
         }
