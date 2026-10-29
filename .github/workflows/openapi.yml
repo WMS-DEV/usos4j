@@ -1,0 +1,50 @@
+name: OpenAPI specification
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - core/src/main/java/**
+      - openapi/**
+      - .github/workflows/openapi.yml
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - core/src/main/java/**
+      - openapi/**
+      - .github/workflows/openapi.yml
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install validator
+        run: pip install openapi-spec-validator
+      - name: Generate specification
+        run: python openapi/generate_openapi.py build/site/openapi.json
+      - name: Validate specification
+        run: python -m openapi_spec_validator build/site/openapi.json
+      - name: Add Swagger UI page
+        run: cp openapi/index.html build/site/index.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/site
+
+  deploy:
+    needs: build
+    if: github.repository == 'WMS-DEV/usos4j' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
