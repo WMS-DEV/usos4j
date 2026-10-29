@@ -1,0 +1,11 @@
+{
+  "id": 42,
+  "first_name": "Żaneta",
+  "last_name": "Testowa",
+  "birth_date": "2000-02-29",
+  "email": null,
+  "has_email": false,
+  "previous_names": [{"first_name": "Anna", "last_name": "Testowa", "until": "2020-01-01"}],
+  "office_hours": {"pl": "Środa", "en": "Wednesday"},
+  "future_field": "ignored"
+}

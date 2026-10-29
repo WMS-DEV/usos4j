@@ -15,6 +15,7 @@ on:
     branches: [ "main" ]
     paths:
       - core/**
+      - .github/workflows/build-core.yml
 
 jobs:
   core:
@@ -27,5 +28,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Build core with Maven
-      run: cd core && mvn -B install --file pom.xml
+    - name: Run core checks and credential-free fixture tests
+      run: mvn -B --file core/pom.xml checkstyle:check verify
+    - name: Upload test reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: core-test-reports
+        path: core/target/surefire-reports/
+        if-no-files-found: ignore

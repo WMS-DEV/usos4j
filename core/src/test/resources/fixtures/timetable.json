@@ -1,0 +1,9 @@
+[
+  {
+    "type": "meeting",
+    "start_time": "2026-10-28 10:15:00",
+    "end_time": "2026-10-28 11:00:00",
+    "name": {"pl": "Spotkanie", "en": "Meeting"},
+    "related_user_ids": ["42", "43"]
+  }
+]

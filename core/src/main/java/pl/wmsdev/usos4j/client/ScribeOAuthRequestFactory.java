@@ -38,14 +38,9 @@ public class ScribeOAuthRequestFactory {
     }
 
     private OAuthRequest create(Verb method, String url, Map<String, Collection<String>> params) {
-        return new OAuthRequest(method, createUrl(url, params));
-    }
-
-    private String createUrl(String url, Map<String, Collection<String>> params) {
-        return BASE_URL + url + "?" + params.entrySet().stream()
-                .map(entry -> entry.getKey() + "=" + entry.getValue().stream().distinct()
-                        .collect(Collectors.joining("|")))
-                .collect(Collectors.joining("&"));
+        var request = new OAuthRequest(method, BASE_URL + url);
+        params.forEach((key, values) -> request.addQuerystringParameter(key, values.stream().distinct().collect(Collectors.joining("|"))));
+        return request;
     }
 
 }
