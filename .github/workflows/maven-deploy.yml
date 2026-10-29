@@ -7,11 +7,24 @@ on:
       - core/src/main/java/**
       - core/pom.xml
 
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: 'Release commit (defaults to the workflow commit)'
+        type: string
+        required: false
+      baseline_version:
+        description: 'Previous published version (defaults to latest release)'
+        type: string
+        required: false
+
 jobs:
   api-compatibility:
+    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
     uses: ./.github/workflows/release-api-compatibility.yml
     with:
-      candidate-ref: ${{ github.sha }}
+      candidate-ref: ${{ inputs.commit || github.sha }}
+      baseline-version: ${{ inputs.baseline_version || '' }}
 
   build:
     needs: api-compatibility
@@ -19,6 +32,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.commit || github.sha }}
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v4
         with:

@@ -33,13 +33,18 @@ jobs:
 
   release:
     needs: api-compatibility
+    permissions:
+      contents: write
+      actions: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ needs.api-compatibility.outputs.candidate-sha }}
           fetch-depth: 0
-          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Verify internal repository push access
+        run: git push --dry-run origin HEAD:main
 
       - name: Resolve versions
         id: versions
@@ -84,6 +89,16 @@ jobs:
           git add core/pom.xml integration-tests/pom.xml
           git commit -m "bump release version"
           git push origin HEAD:main
+
+      - name: Start release follow-up workflows
+        if: ${{ !inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIOUS_RELEASE: ${{ steps.versions.outputs.previous }}
+        run: |
+          gh workflow run copybara.yml --repo "$GITHUB_REPOSITORY" --ref main
+          gh workflow run maven-deploy.yml --repo "$GITHUB_REPOSITORY" --ref main \
+            -f commit="$(git rev-parse HEAD)" -f baseline_version="$PREVIOUS_RELEASE"
 
       - name: Wait for the code sync to the public repository
         id: sync

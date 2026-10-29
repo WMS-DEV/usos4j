@@ -2,17 +2,20 @@ name: Move code
 on:
   push:
   pull_request_target:
+  workflow_dispatch:
 jobs:
   move-code:
+    if: github.event_name != 'workflow_dispatch' || (github.repository == 'WMS-DEV/usos4j-internal' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: olivr/copybara-action@v1.2.4
         with:
           ssh_key: ${{ secrets.SSH_KEY }}
           access_token: ${{ secrets.GH_TOKEN }}
+          workflow: ${{ github.event_name == 'workflow_dispatch' && 'push' || '' }}
           sot_repo: WMS-DEV/usos4j-internal
           destination_repo: WMS-DEV/usos4j
           committer: WMS_BOT <kontakt@wmsdev.pl>
