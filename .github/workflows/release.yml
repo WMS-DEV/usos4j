@@ -119,7 +119,7 @@ jobs:
       - name: Generate release notes
         run: |
           head="${{ steps.sync.outputs.public_sha || 'main' }}"
-          .github/scripts/release-notes.sh "${{ steps.versions.outputs.previous }}" "$head" "${{ steps.versions.outputs.new }}" > release-notes.md
+          bash .github/scripts/release-notes.sh "${{ steps.versions.outputs.previous }}" "$head" "${{ steps.versions.outputs.new }}" > release-notes.md
           cat release-notes.md
           cat release-notes.md >> "$GITHUB_STEP_SUMMARY"
 
