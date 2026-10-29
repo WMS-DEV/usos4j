@@ -28,4 +28,4 @@ jobs:
         run: |
           reviewer=gniadeck
           if [ "$AUTHOR" = "gniadeck" ]; then reviewer=pszumanski; fi
-          gh pr edit ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --add-reviewer "$reviewer"
+          gh api --method POST "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/requested_reviewers" -f "reviewers[]=$reviewer"
