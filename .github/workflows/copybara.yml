@@ -1,12 +1,13 @@
 name: Move code
 on:
   push:
+    branches: [ main ]
   pull_request_target:
   workflow_dispatch:
 jobs:
   move-code:
     if: github.event_name != 'workflow_dispatch' || (github.repository == 'WMS-DEV/usos4j-internal' && github.ref == 'refs/heads/main')
-    runs-on: ubuntu-latest
+    runs-on: ${{ (github.event.pull_request.head.repo.fork && 'ubuntu-latest') || vars.RUNNER || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
         with:

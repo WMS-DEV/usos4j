@@ -33,7 +33,7 @@ jobs:
   build:
     needs: api-compatibility
     if: ${{ !cancelled() && github.ref == 'refs/heads/main' && (needs.api-compatibility.result == 'success' || needs.api-compatibility.result == 'skipped') }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ (github.event.pull_request.head.repo.fork && 'ubuntu-latest') || vars.RUNNER || 'ubuntu-latest' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -57,6 +57,7 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - uses: ./.github/actions/setup-maven
       - name: Deploy with Maven
         run: |
           cd core

@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   compatibility:
-    runs-on: ubuntu-latest
+    runs-on: ${{ (github.event.pull_request.head.repo.fork && 'ubuntu-latest') || vars.RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 15
     outputs:
       candidate-sha: ${{ steps.baseline.outputs.candidate-sha }}
@@ -58,6 +58,7 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "candidate-sha=$(git -C candidate rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "Comparing against Maven Central pl.wmsdev:usos4j:$version" >> "$GITHUB_STEP_SUMMARY"
+      - uses: ./candidate/.github/actions/setup-maven
       - name: Download japicmp
         run: >-
           mvn -B org.apache.maven.plugins:maven-dependency-plugin:3.8.1:copy

@@ -3,14 +3,17 @@ name: Public API compatibility
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - core/**
+      - core/src/main/**
+      - core/pom.xml
       - .github/workflows/api-compatibility.yml
       - .github/workflows/release-api-compatibility.yml
       - .github/workflows/release.yml
       - .github/workflows/maven-deploy.yml
       - .github/scripts/check-api-compatibility.sh
       - .github/scripts/test-api-compatibility.sh
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -20,13 +23,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  released-api-compatibility:
-    uses: ./.github/workflows/release-api-compatibility.yml
-    with:
-      candidate-ref: ${{ github.sha }}
-
   api-compatibility:
-    runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft && !github.event.pull_request.head.repo.fork }}
+    runs-on: ${{ (github.event.pull_request.head.repo.fork && 'ubuntu-latest') || vars.RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 15
     env:
       JAPICMP_VERSION: '0.26.5'
@@ -46,6 +45,7 @@ jobs:
           distribution: temurin
           cache: maven
           cache-dependency-path: '**/pom.xml'
+      - uses: ./candidate/.github/actions/setup-maven
       - name: Download japicmp
         run: >-
           mvn -B org.apache.maven.plugins:maven-dependency-plugin:3.8.1:copy

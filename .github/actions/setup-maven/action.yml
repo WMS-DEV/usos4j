@@ -1,0 +1,25 @@
+name: Set up Maven
+description: Installs Maven when the runner image does not provide it
+
+inputs:
+  version:
+    description: Maven version to install
+    default: '3.9.9'
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        MAVEN_VERSION: ${{ inputs.version }}
+      run: |
+        if command -v mvn >/dev/null 2>&1; then
+          mvn --version | head -1
+          exit 0
+        fi
+        archive="apache-maven-${MAVEN_VERSION}-bin.tar.gz"
+        url="https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/${MAVEN_VERSION}/${archive}"
+        curl -fsSL -o "${RUNNER_TEMP}/${archive}" "$url"
+        echo "$(curl -fsSL "${url}.sha512")  ${RUNNER_TEMP}/${archive}" | sha512sum -c -
+        tar -xzf "${RUNNER_TEMP}/${archive}" -C "${RUNNER_TEMP}"
+        echo "${RUNNER_TEMP}/apache-maven-${MAVEN_VERSION}/bin" >> "$GITHUB_PATH"

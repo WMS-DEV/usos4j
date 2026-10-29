@@ -2,7 +2,7 @@ name: Label pull requests
 
 on:
   pull_request_target:
-    types: [opened, reopened, synchronize, edited, ready_for_review]
+    types: [ opened, reopened, synchronize, ready_for_review ]
 
 permissions:
   contents: read
@@ -10,13 +10,22 @@ permissions:
 
 concurrency:
   group: label-pr-${{ github.event.pull_request.number }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   label:
-    runs-on: ubuntu-latest
+    runs-on: ${{ (github.event.pull_request.head.repo.fork && 'ubuntu-latest') || vars.RUNNER || 'ubuntu-latest' }}
     steps:
       - name: Synchronize labels from changed file paths
         uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13
         with:
           sync-labels: true
+      - name: Request a review
+        if: github.event.action == 'opened' || github.event.action == 'ready_for_review'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          reviewer=gniadeck
+          if [ "$AUTHOR" = "gniadeck" ]; then reviewer=pszumanski; fi
+          gh pr edit ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --add-reviewer "$reviewer"

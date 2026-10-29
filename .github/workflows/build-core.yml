@@ -1,39 +1,47 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-name: Core - Build and test
+name: Core and integration tests - Build and test
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
     paths:
       - core/**
+      - integration-tests/**
       - .github/workflows/build-core.yml
+  pull_request:
+    branches: [ "main" ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    paths:
+      - core/**
+      - integration-tests/**
+      - .github/workflows/build-core.yml
+  workflow_dispatch:
+
+concurrency:
+  group: build-core-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  core:
-    runs-on: ubuntu-latest
+  build:
+    if: github.event_name != 'pull_request' || (!github.event.pull_request.draft && !github.event.pull_request.head.repo.fork)
+    runs-on: ${{ (github.event.pull_request.head.repo.fork && 'ubuntu-latest') || vars.RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 15
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Run core checks and credential-free fixture tests
-      run: mvn -B --file core/pom.xml checkstyle:check verify
-    - name: Upload test reports
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: core-test-reports
-        path: core/target/surefire-reports/
-        if-no-files-found: ignore
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+          cache: maven
+      - uses: ./.github/actions/setup-maven
+      - name: Check style, build and test core
+        run: mvn -B --no-transfer-progress -f core/pom.xml checkstyle:check install
+      - name: Compile integration tests
+        run: mvn -B --no-transfer-progress -f integration-tests/pom.xml test-compile
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-test-reports
+          path: core/target/surefire-reports/
+          if-no-files-found: ignore

@@ -1,0 +1,68 @@
+name: Run CI for a pull request
+
+on:
+  issue_comment:
+    types: [ created ]
+  pull_request_target:
+    types: [ closed ]
+
+permissions:
+  contents: write
+  actions: write
+  pull-requests: write
+
+concurrency:
+  group: run-ci-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  start:
+    if: >-
+      github.repository == 'WMS-DEV/usos4j' && github.event_name == 'issue_comment'
+      && github.event.issue.pull_request && startsWith(github.event.comment.body, '/run-ci')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      NUMBER: ${{ github.event.issue.number }}
+      COMMENTER: ${{ github.event.comment.user.login }}
+    steps:
+      - name: Only maintainers can start CI
+        run: |
+          permission=$(gh api "repos/${GITHUB_REPOSITORY}/collaborators/${COMMENTER}/permission" --jq .permission)
+          case "$permission" in
+            admin|maintain|write) ;;
+            *) echo "::error::${COMMENTER} has '${permission}' permission, write is required"; exit 1 ;;
+          esac
+      - uses: actions/checkout@v4
+      - name: Copy the pull request head into a branch and start the workflows
+        run: |
+          expected=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${NUMBER}" --jq .head.sha)
+          git fetch --depth=1 origin "refs/pull/${NUMBER}/head"
+          test "$(git rev-parse FETCH_HEAD)" = "$expected" || { echo "::error::the pull request head moved, comment again"; exit 1; }
+          git push --force origin "FETCH_HEAD:refs/heads/ci/pr-${NUMBER}"
+          files=$(gh pr diff "$NUMBER" --name-only)
+          started=""
+          start() {
+            if echo "$files" | grep -qE "$2"; then
+              gh workflow run "$1" --ref "ci/pr-${NUMBER}"
+              started="${started} $1"
+            fi
+          }
+          start build-core.yml '^(core|integration-tests)/'
+          start api-compatibility.yml '^(core/src/main/|core/pom.xml)'
+          start openapi.yml '^(core/src/main/java/|openapi/)'
+          start build-demo.yml '^demo/'
+          start build-spring-demo.yml '^spring-demo/'
+          start build-spring-secruity-demo.yml '^spring-security-demo/'
+          gh pr comment "$NUMBER" --body "CI started for ${expected:0:7} on request of ${COMMENTER}:${started:- nothing matches the changed files}. Results show up as checks on this pull request. Comment /run-ci again after new commits."
+
+  cleanup:
+    if: github.repository == 'WMS-DEV/usos4j' && github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          NUMBER: ${{ github.event.pull_request.number }}
+        run: gh api -X DELETE "repos/${GITHUB_REPOSITORY}/git/refs/heads/ci/pr-${NUMBER}" || true
