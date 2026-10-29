@@ -73,10 +73,11 @@ jobs:
           echo "current=$current" >> "$GITHUB_OUTPUT"
           echo "previous=$previous" >> "$GITHUB_OUTPUT"
           echo "new=$new" >> "$GITHUB_OUTPUT"
+          if [ "$new" = "$current" ]; then echo "bumped=true" >> "$GITHUB_OUTPUT"; fi
           echo "Current: $current, previous release: $previous, new: $new"
 
       - name: Bump version
-        if: ${{ !inputs.dry_run }}
+        if: ${{ !inputs.dry_run && !steps.versions.outputs.bumped }}
         run: |
           old="${{ steps.versions.outputs.current }}"
           new="${{ steps.versions.outputs.new }}"
@@ -97,6 +98,10 @@ jobs:
           PREVIOUS_RELEASE: ${{ steps.versions.outputs.previous }}
         run: |
           gh workflow run copybara.yml --repo "$GITHUB_REPOSITORY" --ref main
+          if [ "${{ steps.versions.outputs.bumped }}" = "true" ]; then
+            echo "Version ${{ steps.versions.outputs.new }} is already on main, not starting the deploy again. Run 'Deploy to Sonatype Central' by hand if it is still needed." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           gh workflow run maven-deploy.yml --repo "$GITHUB_REPOSITORY" --ref main \
             -f commit="$(git rev-parse HEAD)" -f baseline_version="$PREVIOUS_RELEASE"
           echo "Deploy to Sonatype Central started for $(git rev-parse --short HEAD). If it fails, run 'Deploy to Sonatype Central' again with commit=$(git rev-parse HEAD) and skip_api_compatibility=true." >> "$GITHUB_STEP_SUMMARY"
