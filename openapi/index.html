@@ -6,63 +6,92 @@
     <title>usos4j - USOS API</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui.min.css">
     <style>
-        body { margin: 0; font-family: sans-serif; }
-        #usos-panel { max-width: 1460px; margin: 0 auto; padding: 16px 20px; box-sizing: border-box; }
-        #usos-panel h1 { margin: 0 0 4px; font-size: 22px; }
-        #usos-panel p, #usos-panel label, #usos-panel summary { font-size: 14px; }
-        #usos-panel .hint { color: #5a5a5a; margin: 0 0 12px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px 16px; }
-        .grid label { display: flex; flex-direction: column; gap: 4px; }
-        .grid input, .grid select { padding: 6px 8px; font-size: 14px; }
-        .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
-        button { padding: 6px 12px; font-size: 14px; cursor: pointer; }
-        details { margin-top: 12px; }
-        #status { margin: 12px 0 0; font-weight: bold; }
-        #message { margin: 8px 0 0; white-space: pre-wrap; }
-        .error { color: #b00020; }
+        :root { --ink: #3b4151; --muted: #6b7280; --line: #dfe3e8; --accent: #4990e2; --accent-dark: #2f74c4; --ok: #1f8f5f; --warn: #b26a00; --bad: #b00020; --card: #f7f9fb; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: var(--ink); }
+        #usos-panel { max-width: 1460px; margin: 0 auto; padding: 24px 20px 8px; box-sizing: border-box; }
+        #usos-panel h1 { margin: 0 0 6px; font-size: 26px; font-weight: 700; }
+        #usos-panel .hint { color: var(--muted); margin: 0 0 18px; font-size: 14px; line-height: 1.5; max-width: 900px; }
+        .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; }
+        .section-title { margin: 0 0 12px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px 16px; }
+        .grid + .section-title { margin-top: 20px; }
+        label { display: flex; flex-direction: column; gap: 5px; font-size: 13px; font-weight: 600; }
+        label small { font-weight: 400; color: var(--muted); }
+        input, select { box-sizing: border-box; width: 100%; padding: 8px 10px; font: inherit; font-weight: 400; color: var(--ink); background: #fff; border: 1px solid #c8ced6; border-radius: 6px; }
+        input:focus, select:focus { outline: 2px solid rgba(73, 144, 226, .35); border-color: var(--accent); }
+        .row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-top: 16px; font-size: 13px; }
+        label.check { flex-direction: row; align-items: center; gap: 8px; font-weight: 400; }
+        label.check input { width: auto; margin: 0; }
+        a { color: var(--accent-dark); }
+        button { padding: 8px 16px; font: inherit; font-weight: 600; color: #fff; background: var(--accent); border: 0; border-radius: 6px; cursor: pointer; }
+        button:hover { background: var(--accent-dark); }
+        details { margin-top: 16px; background: #fff; border: 1px solid var(--line); border-radius: 8px; }
+        summary { padding: 12px 16px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; padding: 4px 16px 16px; }
+        .step { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+        .step button { align-self: flex-start; }
+        #status { display: inline-block; margin: 16px 0 0; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; background: #fff4e0; color: var(--warn); }
+        #status.signed { background: #e3f5ec; color: var(--ok); }
+        #message { margin: 10px 0 0; font-size: 14px; white-space: pre-wrap; }
+        #message:empty { display: none; }
+        .error { color: var(--bad); }
+        #swagger-ui { margin-top: 12px; }
     </style>
 </head>
 <body>
 <section id="usos-panel">
     <h1>usos4j - USOS API</h1>
     <p class="hint">Try the USOS API from your browser. Requests are signed with OAuth 1.0a here, with your own consumer key and secret, and sent straight to the chosen installation. The keys are only used to compute signatures and are not sent anywhere else. The installation chosen here replaces the server selected in the list below.</p>
-    <form id="credentials" class="grid" autocomplete="off" onsubmit="return false">
-        <label>USOS installation
-            <select id="installation"></select>
-        </label>
-        <label>Installation base URL
-            <input id="base-url" value="https://apps.usos.pw.edu.pl/">
-        </label>
-        <label>Consumer key
-            <input id="consumer-key" autocomplete="off">
-        </label>
-        <label>Consumer secret
-            <input id="consumer-secret" type="password" autocomplete="off">
-        </label>
-        <label>Access token (optional, needed by user endpoints)
-            <input id="token" autocomplete="off">
-        </label>
-        <label>Access token secret
-            <input id="token-secret" type="password" autocomplete="off">
-        </label>
-    </form>
-    <div class="row">
-        <label><input type="checkbox" id="remember"> keep the values in this browser tab (session storage)</label>
-        <a id="register" href="https://apps.usos.edu.pl/developers/" target="_blank" rel="noopener">get a consumer key for this installation</a>
+    <div class="card">
+        <form id="credentials" autocomplete="off" onsubmit="return false">
+            <h2 class="section-title">Installation</h2>
+            <div class="grid">
+                <label>USOS installation
+                    <select id="installation"></select>
+                </label>
+                <label>Base URL
+                    <input id="base-url" value="https://apps.usos.pw.edu.pl/">
+                </label>
+            </div>
+            <h2 class="section-title">Application keys</h2>
+            <div class="grid">
+                <label>Consumer key
+                    <input id="consumer-key" autocomplete="off">
+                </label>
+                <label>Consumer secret
+                    <input id="consumer-secret" type="password" autocomplete="off">
+                </label>
+            </div>
+            <h2 class="section-title">Access token <small>(optional, needed by user endpoints)</small></h2>
+            <div class="grid">
+                <label>Token
+                    <input id="token" autocomplete="off">
+                </label>
+                <label>Token secret
+                    <input id="token-secret" type="password" autocomplete="off">
+                </label>
+            </div>
+        </form>
+        <div class="row">
+            <label class="check"><input type="checkbox" id="remember"> keep the values in this browser tab (session storage)</label>
+            <a id="register" href="https://apps.usos.edu.pl/developers/" target="_blank" rel="noopener">get a consumer key for this installation</a>
+        </div>
+        <details>
+            <summary>Get an access token for your account</summary>
+            <div class="steps">
+                <div class="step">
+                    <label>Scopes <input id="scopes" value="studies|offline_access"></label>
+                    <button id="start-authorization" type="button">1. Open authorization page</button>
+                </div>
+                <div class="step">
+                    <label>PIN shown by USOS <input id="verifier" autocomplete="off"></label>
+                    <button id="finish-authorization" type="button">2. Get the access token</button>
+                </div>
+            </div>
+        </details>
+        <p id="status"></p>
+        <p id="message"></p>
     </div>
-    <details>
-        <summary>Get an access token for your account</summary>
-        <div class="row">
-            <label>Scopes <input id="scopes" size="60" value="studies|offline_access"></label>
-            <button id="start-authorization" type="button">1. Open authorization page</button>
-        </div>
-        <div class="row">
-            <label>PIN shown by USOS <input id="verifier" size="12" autocomplete="off"></label>
-            <button id="finish-authorization" type="button">2. Get the access token</button>
-        </div>
-    </details>
-    <p id="status"></p>
-    <p id="message"></p>
 </section>
 <div id="swagger-ui"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui-bundle.min.js"></script>
@@ -100,6 +129,7 @@
                 : "Requests are signed with your consumer key only. User endpoints also need an access token.";
         }
         element("status").textContent = text;
+        element("status").className = current.consumerKey && current.consumerSecret ? "signed" : "";
         element("register").href = baseUrl().replace(/\/+$/, "") + "/developers/";
     }
 
