@@ -1,0 +1,77 @@
+name: Public API compatibility
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - core/**
+      - .github/workflows/api-compatibility.yml
+      - .github/workflows/release-api-compatibility.yml
+      - .github/workflows/release.yml
+      - .github/workflows/maven-deploy.yml
+      - .github/scripts/check-api-compatibility.sh
+      - .github/scripts/test-api-compatibility.sh
+
+permissions:
+  contents: read
+
+concurrency:
+  group: api-compatibility-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  released-api-compatibility:
+    uses: ./.github/workflows/release-api-compatibility.yml
+    with:
+      candidate-ref: ${{ github.sha }}
+
+  api-compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      JAPICMP_VERSION: '0.26.5'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: candidate
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: baseline
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+          cache: maven
+          cache-dependency-path: '**/pom.xml'
+      - name: Download japicmp
+        run: >-
+          mvn -B org.apache.maven.plugins:maven-dependency-plugin:3.8.1:copy
+          -Dartifact=com.github.siom79.japicmp:japicmp:${JAPICMP_VERSION}:jar:jar-with-dependencies
+          -DoutputDirectory="${RUNNER_TEMP}/japicmp"
+      - name: Verify the compatibility gate
+        run: bash candidate/.github/scripts/test-api-compatibility.sh "${RUNNER_TEMP}/japicmp/japicmp-${JAPICMP_VERSION}-jar-with-dependencies.jar"
+      - name: Build baseline and candidate
+        run: |
+          for source in baseline candidate; do
+            mvn -B -f "$source/core/pom.xml" package -Dmaven.test.skip=true
+            mvn -B -f "$source/core/pom.xml" org.apache.maven.plugins:maven-dependency-plugin:3.8.1:build-classpath -DincludeScope=compile -Dmdep.outputFile=target/api-classpath.txt
+          done
+      - name: Check public API compatibility
+        run: |
+          mapfile -t baseline_jars < <(find baseline/core/target -maxdepth 1 -name '*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar')
+          mapfile -t candidate_jars < <(find candidate/core/target -maxdepth 1 -name '*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar')
+          test "${#baseline_jars[@]}" -eq 1
+          test "${#candidate_jars[@]}" -eq 1
+          bash candidate/.github/scripts/check-api-compatibility.sh \
+            "${RUNNER_TEMP}/japicmp/japicmp-${JAPICMP_VERSION}-jar-with-dependencies.jar" \
+            "${baseline_jars[0]}" "${candidate_jars[0]}" api-compatibility-report \
+            "$(cat baseline/core/target/api-classpath.txt)" "$(cat candidate/core/target/api-classpath.txt)"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-api-compatibility
+          path: api-compatibility-report/
+          if-no-files-found: ignore

@@ -1,0 +1,97 @@
+name: Released API compatibility
+
+on:
+  workflow_call:
+    inputs:
+      candidate-ref:
+        required: true
+        type: string
+      baseline-version:
+        default: ''
+        type: string
+    outputs:
+      candidate-sha:
+        value: ${{ jobs.compatibility.outputs.candidate-sha }}
+      baseline-tag:
+        value: ${{ jobs.compatibility.outputs.baseline-tag }}
+
+permissions:
+  contents: read
+
+jobs:
+  compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      candidate-sha: ${{ steps.baseline.outputs.candidate-sha }}
+      baseline-tag: ${{ steps.baseline.outputs.tag }}
+    env:
+      JAPICMP_VERSION: '0.26.5'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.candidate-ref }}
+          path: candidate
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+          cache: maven
+          cache-dependency-path: candidate/core/pom.xml
+      - name: Resolve the published baseline
+        id: baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASELINE_VERSION: ${{ inputs.baseline-version }}
+        run: |
+          tag="$BASELINE_VERSION"
+          if [ -z "$tag" ]; then
+            tag=$(gh api repos/WMS-DEV/usos4j/releases/latest --jq .tag_name)
+          fi
+          version="${tag#v}"
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid published baseline version: $tag"
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "candidate-sha=$(git -C candidate rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "Comparing against Maven Central pl.wmsdev:usos4j:$version" >> "$GITHUB_STEP_SUMMARY"
+      - name: Download japicmp
+        run: >-
+          mvn -B org.apache.maven.plugins:maven-dependency-plugin:3.8.1:copy
+          -Dartifact=com.github.siom79.japicmp:japicmp:${JAPICMP_VERSION}:jar:jar-with-dependencies
+          -DoutputDirectory="${RUNNER_TEMP}/japicmp"
+      - name: Verify the compatibility gate
+        run: bash candidate/.github/scripts/test-api-compatibility.sh "${RUNNER_TEMP}/japicmp/japicmp-${JAPICMP_VERSION}-jar-with-dependencies.jar"
+      - name: Resolve released artifacts and build the candidate
+        env:
+          BASELINE_VERSION: ${{ steps.baseline.outputs.version }}
+        run: |
+          for type in jar pom; do
+            mvn -B -f candidate/core/pom.xml org.apache.maven.plugins:maven-dependency-plugin:3.8.1:copy \
+              -Dartifact="pl.wmsdev:usos4j:${BASELINE_VERSION}:${type}" -DoutputDirectory="${RUNNER_TEMP}/released-api"
+          done
+          mvn -B -f "${RUNNER_TEMP}/released-api/usos4j-${BASELINE_VERSION}.pom" \
+            org.apache.maven.plugins:maven-dependency-plugin:3.8.1:build-classpath \
+            -DincludeScope=compile -Dmdep.outputFile="${RUNNER_TEMP}/released-api/classpath.txt"
+          mvn -B -f candidate/core/pom.xml package -Dmaven.test.skip=true
+          mvn -B -f candidate/core/pom.xml org.apache.maven.plugins:maven-dependency-plugin:3.8.1:build-classpath \
+            -DincludeScope=compile -Dmdep.outputFile=target/api-classpath.txt
+      - name: Check compatibility with the published API
+        env:
+          BASELINE_VERSION: ${{ steps.baseline.outputs.version }}
+        run: |
+          mapfile -t candidate_jars < <(find candidate/core/target -maxdepth 1 -name '*.jar' ! -name '*-sources.jar' ! -name '*-javadoc.jar')
+          test "${#candidate_jars[@]}" -eq 1
+          bash candidate/.github/scripts/check-api-compatibility.sh \
+            "${RUNNER_TEMP}/japicmp/japicmp-${JAPICMP_VERSION}-jar-with-dependencies.jar" \
+            "${RUNNER_TEMP}/released-api/usos4j-${BASELINE_VERSION}.jar" "${candidate_jars[0]}" released-api-report \
+            "$(cat "${RUNNER_TEMP}/released-api/classpath.txt")" "$(cat candidate/core/target/api-classpath.txt)"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: released-api-compatibility
+          path: released-api-report/
+          if-no-files-found: ignore

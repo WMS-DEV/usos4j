@@ -26,12 +26,18 @@ env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 jobs:
+  api-compatibility:
+    uses: ./.github/workflows/release-api-compatibility.yml
+    with:
+      candidate-ref: main
+
   release:
+    needs: api-compatibility
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ needs.api-compatibility.outputs.candidate-sha }}
           fetch-depth: 0
           token: ${{ secrets.GH_TOKEN }}
 
@@ -42,7 +48,7 @@ jobs:
           INPUT_BUMP: ${{ inputs.bump }}
         run: |
           current=$(sed -n '0,/<version>/s|.*<version>\(.*\)</version>.*|\1|p' core/pom.xml)
-          previous=$(gh api "repos/${PUBLIC_REPO}/releases/latest" --jq .tag_name)
+          previous="${{ needs.api-compatibility.outputs.baseline-tag }}"
           if [ -n "$INPUT_VERSION" ]; then
             new="$INPUT_VERSION"
           else
