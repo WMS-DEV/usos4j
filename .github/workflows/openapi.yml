@@ -26,12 +26,19 @@ jobs:
           python-version: '3.12'
       - name: Install validator
         run: pip install openapi-spec-validator
+      - name: Test the generator
+        run: python -m unittest discover -s openapi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Test the OAuth 1.0a signer
+        run: node --test openapi/test_oauth1.js
       - name: Generate specification
         run: python openapi/generate_openapi.py build/site/openapi.json
       - name: Validate specification
         run: python -m openapi_spec_validator build/site/openapi.json
       - name: Add Swagger UI page
-        run: cp openapi/index.html build/site/index.html
+        run: cp openapi/index.html openapi/oauth1.js build/site/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: build/site

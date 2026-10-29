@@ -3,31 +3,194 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>usos4j - USOS API specification</title>
+    <title>usos4j - USOS API</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui.min.css">
     <style>
-        .notice {
-            margin: 16px auto;
-            max-width: 1460px;
-            padding: 12px 20px;
-            border-left: 4px solid #f5a623;
-            background: #fff8e8;
-            color: #3b3b3b;
-            font-family: sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-        }
+        body { margin: 0; font-family: sans-serif; }
+        #usos-panel { max-width: 1460px; margin: 0 auto; padding: 16px 20px; box-sizing: border-box; }
+        #usos-panel h1 { margin: 0 0 4px; font-size: 22px; }
+        #usos-panel p, #usos-panel label, #usos-panel summary { font-size: 14px; }
+        #usos-panel .hint { color: #5a5a5a; margin: 0 0 12px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px 16px; }
+        .grid label { display: flex; flex-direction: column; gap: 4px; }
+        .grid input, .grid select { padding: 6px 8px; font-size: 14px; }
+        .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+        button { padding: 6px 12px; font-size: 14px; cursor: pointer; }
+        details { margin-top: 12px; }
+        #status { margin: 12px 0 0; font-weight: bold; }
+        #message { margin: 8px 0 0; white-space: pre-wrap; }
+        .error { color: #b00020; }
     </style>
 </head>
 <body>
-<div class="notice">
-    <strong>Generated, not official.</strong>
-    This specification is generated from usos4j's implementation of the USOS API, it is not an official USOS API specification and does not have to be true: the USOS documentation is sometimes inaccurate, response shapes are only as precise as the Java models, and installations differ. It provides structured data on how the USOS API works.
-</div>
+<section id="usos-panel">
+    <h1>usos4j - USOS API</h1>
+    <p class="hint">Try the USOS API from your browser. Requests are signed with OAuth 1.0a here, with your own consumer key and secret, and sent straight to the chosen installation. The keys are only used to compute signatures and are not sent anywhere else. The installation chosen here replaces the server selected in the list below.</p>
+    <form id="credentials" class="grid" autocomplete="off" onsubmit="return false">
+        <label>USOS installation
+            <select id="installation"></select>
+        </label>
+        <label>Installation base URL
+            <input id="base-url" value="https://apps.usos.pw.edu.pl/">
+        </label>
+        <label>Consumer key
+            <input id="consumer-key" autocomplete="off">
+        </label>
+        <label>Consumer secret
+            <input id="consumer-secret" type="password" autocomplete="off">
+        </label>
+        <label>Access token (optional, needed by user endpoints)
+            <input id="token" autocomplete="off">
+        </label>
+        <label>Access token secret
+            <input id="token-secret" type="password" autocomplete="off">
+        </label>
+    </form>
+    <div class="row">
+        <label><input type="checkbox" id="remember"> keep the values in this browser tab (session storage)</label>
+        <a id="register" href="https://apps.usos.edu.pl/developers/" target="_blank" rel="noopener">get a consumer key for this installation</a>
+    </div>
+    <details>
+        <summary>Get an access token for your account</summary>
+        <div class="row">
+            <label>Scopes <input id="scopes" size="60" value="studies|offline_access"></label>
+            <button id="start-authorization" type="button">1. Open authorization page</button>
+        </div>
+        <div class="row">
+            <label>PIN shown by USOS <input id="verifier" size="12" autocomplete="off"></label>
+            <button id="finish-authorization" type="button">2. Get the access token</button>
+        </div>
+    </details>
+    <p id="status"></p>
+    <p id="message"></p>
+</section>
 <div id="swagger-ui"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui-bundle.min.js"></script>
+<script src="oauth1.js"></script>
 <script>
-    SwaggerUIBundle({url: "openapi.json", dom_id: "#swagger-ui"});
+    const PANEL_FIELDS = ["base-url", "consumer-key", "consumer-secret", "token", "token-secret", "scopes"];
+    const INSTALLATIONS_URL = "https://apps.usos.edu.pl/services/apisrv/installations";
+    const element = (id) => document.getElementById(id);
+    let pendingRequestToken = null;
+
+    function baseUrl() {
+        return element("base-url").value.trim();
+    }
+
+    function credentials() {
+        return {
+            consumerKey: element("consumer-key").value.trim(),
+            consumerSecret: element("consumer-secret").value.trim(),
+            token: element("token").value.trim(),
+            tokenSecret: element("token-secret").value.trim(),
+        };
+    }
+
+    function showMessage(text, isError) {
+        element("message").textContent = text;
+        element("message").className = isError ? "error" : "";
+    }
+
+    function refreshStatus() {
+        const current = credentials();
+        let text = "Requests are not signed yet: enter a consumer key and secret.";
+        if (current.consumerKey && current.consumerSecret) {
+            text = current.token && current.tokenSecret
+                ? "Requests are signed with your consumer key and your access token."
+                : "Requests are signed with your consumer key only. User endpoints also need an access token.";
+        }
+        element("status").textContent = text;
+        element("register").href = baseUrl().replace(/\/+$/, "") + "/developers/";
+    }
+
+    function persist() {
+        try {
+            sessionStorage.removeItem("usos4j-panel");
+            if (element("remember").checked) {
+                sessionStorage.setItem("usos4j-panel", JSON.stringify(Object.fromEntries(PANEL_FIELDS.map((id) => [id, element(id).value]))));
+            }
+        } catch (ignored) {
+        }
+    }
+
+    function restore() {
+        try {
+            const saved = JSON.parse(sessionStorage.getItem("usos4j-panel") || "null");
+            if (saved) {
+                PANEL_FIELDS.forEach((id) => { element(id).value = saved[id] || element(id).value; });
+                element("remember").checked = true;
+            }
+        } catch (ignored) {
+        }
+    }
+
+    async function loadInstallations() {
+        const select = element("installation");
+        select.add(new Option("custom (type the base URL)", ""));
+        try {
+            const installations = await (await fetch(INSTALLATIONS_URL)).json();
+            installations
+                .map((item) => ({url: item.base_url, name: (item.institution_name && (item.institution_name.en || item.institution_name.pl)) || item.base_url}))
+                .sort((left, right) => left.name.localeCompare(right.name))
+                .forEach((item) => select.add(new Option(item.name + (item.url.startsWith("http:") ? " (http, browsers may block it)" : ""), item.url)));
+            select.value = Array.from(select.options).some((option) => option.value === baseUrl()) ? baseUrl() : "";
+        } catch (error) {
+            showMessage("Could not load the list of installations, type the base URL instead.", true);
+        }
+    }
+
+    async function startAuthorization() {
+        try {
+            pendingRequestToken = await UsosOAuth1.requestToken(baseUrl(), credentials(), element("scopes").value.trim());
+            window.open(UsosOAuth1.authorizeUrl(baseUrl(), pendingRequestToken), "_blank", "noopener");
+            showMessage("Authorize the application in the new tab, then type the PIN here and press the second button.");
+        } catch (error) {
+            showMessage("Could not get a request token: " + error.message, true);
+        }
+    }
+
+    async function finishAuthorization() {
+        try {
+            if (!pendingRequestToken) {
+                throw new Error("start the authorization first");
+            }
+            const result = await UsosOAuth1.accessToken(baseUrl(), credentials(), pendingRequestToken, element("verifier").value.trim());
+            element("token").value = result.token;
+            element("token-secret").value = result.tokenSecret;
+            pendingRequestToken = null;
+            persist();
+            refreshStatus();
+            showMessage("Access token received, user endpoints can be called now.");
+        } catch (error) {
+            showMessage("Could not get the access token: " + error.message, true);
+        }
+    }
+
+    restore();
+    refreshStatus();
+    loadInstallations();
+    document.getElementById("credentials").addEventListener("input", () => { persist(); refreshStatus(); });
+    element("remember").addEventListener("change", persist);
+    element("installation").addEventListener("change", (event) => {
+        if (event.target.value) {
+            element("base-url").value = event.target.value;
+            persist();
+            refreshStatus();
+        }
+    });
+    element("start-authorization").addEventListener("click", startAuthorization);
+    element("finish-authorization").addEventListener("click", finishAuthorization);
+
+    SwaggerUIBundle({
+        url: "openapi.json",
+        dom_id: "#swagger-ui",
+        deepLinking: true,
+        filter: true,
+        tryItOutEnabled: true,
+        displayRequestDuration: true,
+        docExpansion: "none",
+        requestInterceptor: (request) => UsosOAuth1.signSwaggerRequest(request, credentials(), baseUrl()),
+    });
 </script>
 </body>
 </html>

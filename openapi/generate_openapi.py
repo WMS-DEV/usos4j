@@ -6,6 +6,7 @@ from pathlib import Path
 SOURCE_ROOT = Path("core/src/main/java/pl/wmsdev/usos4j")
 POM = Path("core/pom.xml")
 DEFAULT_OUTPUT = Path("build/openapi/openapi.json")
+ERROR_SCHEMA = "UsosError"
 
 SIMPLE_TYPES = {
     "String": {"type": "string"},
@@ -29,7 +30,11 @@ LIST_TYPES = {"List", "Set", "Collection"}
 METHOD_PATTERN = re.compile(
     r"((?:@\w+(?:\([^)]*\))?\s*)*)public\s+([\w<>\[\], ?]+?)\s+(\w+)\s*\(([^)]*)\)\s*\{"
 )
-RECORD_PATTERN = re.compile(r"record\s+(\w+)\s*\((.*?)\)\s*(?:implements[^{]*)?\{", re.DOTALL)
+RECORD_START_PATTERN = re.compile(r"\brecord\s+(\w+)\s*\(")
+ALIAS_PATTERN = re.compile(r'@JsonAlias\(\s*(?:\{\s*)?"([^"]+)"')
+FIELD_SELECTOR_PATTERN = re.compile(r"FieldSelector\.fromRequest\(\s*(\w+)\.class\s*\)")
+FIELDS_LITERAL_PATTERN = re.compile(r'"fields"\s*,\s*List\.of\(([^)]*)\)')
+WIRE_VALUE_PATTERN = re.compile(r'"(\w+)"\s*,\s*(?:List\.of|Collections\.singletonList|String\.valueOf)\(([^)]*)\)')
 ENUM_PATTERN = re.compile(r"enum\s+(\w+)\s*(?:implements[^{]*)?\{(.*?)(?:;|\})", re.DOTALL)
 BUILDER_PATTERN = re.compile(r"static\s+\w+\s+builder\s*\(([^)]*)\)")
 ENDPOINT_PATTERN = re.compile(r'"(services/[\w/]+)"')
@@ -69,17 +74,38 @@ def read_java_files(directory):
     return {path: path.read_text(encoding="utf-8") for path in sorted(directory.rglob("*.java"))}
 
 
+def find_records(text):
+    for match in RECORD_START_PATTERN.finditer(text):
+        depth, end = 1, match.end()
+        while end < len(text) and depth:
+            depth += {"(": 1, ")": -1}.get(text[end], 0)
+            end += 1
+        header_end = text.find("{", end)
+        implements = text[end:header_end] if header_end != -1 else ""
+        yield match.group(1), text[match.end():end - 1], implements
+
+
+def parse_component(declaration):
+    type_name, name = split_type_and_name(strip_annotations(declaration))
+    alias = ALIAS_PATTERN.search(declaration)
+    return {
+        "type": type_name,
+        "name": name,
+        "alias": alias.group(1) if alias else None,
+        "excluded": "@ExcludeField" in declaration,
+    }
+
+
 def collect_models(model_files):
     records, params, enums = {}, {}, {}
-    for text in model_files.values():
-        text = strip_annotations(text)
-        for match in RECORD_PATTERN.finditer(text):
-            name = match.group(1)
-            components = [split_type_and_name(part) for part in split_top_level(match.group(2))]
-            if "implements UsosParams" in match.group(0) or name.endswith("Params") or name.endswith("Param"):
-                params[name] = parse_params(components, text)
+    for original in model_files.values():
+        text = strip_annotations(original)
+        for name, raw_components, implements in find_records(original):
+            components = [parse_component(part) for part in split_top_level(raw_components)]
+            if "UsosParams" in implements or name.endswith("Params") or name.endswith("Param"):
+                params[name] = parse_params([(item["type"], item["name"]) for item in components], text)
             else:
-                records[name] = components
+                records[name] = {"components": components, "common": "UsosCommonObject" in implements}
         for match in ENUM_PATTERN.finditer(text):
             enums[match.group(1)] = [value.strip().lower() for value in match.group(2).split(",") if value.strip()]
     return records, params, enums
@@ -116,29 +142,119 @@ def type_to_schema(type_name, records, enums):
     return {}
 
 
+def property_name(component):
+    return component["alias"] or camel_to_snake(component["name"])
+
+
 def build_schemas(records, enums):
     schemas = {}
-    for name, components in records.items():
-        properties = {camel_to_snake(field): type_to_schema(type_name, records, enums) for type_name, field in components}
+    for name, record in records.items():
+        properties = {
+            property_name(component): type_to_schema(component["type"], records, enums)
+            for component in record["components"]
+        }
         schemas[name] = {"type": "object", "properties": properties}
+    schemas[ERROR_SCHEMA] = {"type": "object", "properties": {"message": {"type": "string"}}}
     return schemas
 
 
-def build_query_parameters(params, records, enums):
+def referenced_schemas(node, schemas, found=None):
+    found = set() if found is None else found
+    if isinstance(node, dict):
+        reference = node.get("$ref")
+        if reference and reference.rsplit("/", 1)[-1] not in found:
+            name = reference.rsplit("/", 1)[-1]
+            found.add(name)
+            referenced_schemas(schemas[name], schemas, found)
+        for value in node.values():
+            referenced_schemas(value, schemas, found)
+    elif isinstance(node, list):
+        for value in node:
+            referenced_schemas(value, schemas, found)
+    return found
+
+
+def prune_schemas(paths, schemas):
+    used = referenced_schemas(paths, schemas)
+    return {name: schema for name, schema in schemas.items() if name in used}
+
+
+def element_type(type_name):
+    generic = re.match(r"(\w+)<(.+)>$", type_name.strip())
+    if generic and generic.group(1) in LIST_TYPES:
+        return generic.group(2).strip()
+    return type_name.strip()
+
+
+def response_selector(name, records, visiting=()):
+    keys = []
+    for component in records[name]["components"]:
+        if component["excluded"]:
+            continue
+        key = property_name(component)
+        nested = element_type(component["type"])
+        if nested in records and records[nested]["common"] and nested not in (*visiting, name):
+            key += "[" + response_selector(nested, records, (*visiting, name)) + "]"
+        keys.append(key)
+    return "|".join(keys)
+
+
+def default_fields(body, records):
+    selector = FIELD_SELECTOR_PATTERN.search(body)
+    if selector and selector.group(1) in records:
+        return response_selector(selector.group(1), records)
+    literal = FIELDS_LITERAL_PATTERN.search(body)
+    if literal:
+        return "|".join(re.findall(r'"([^"]*)"', literal.group(1))) or None
+    return None
+
+
+def wire_key(body, name):
+    for key, value in WIRE_VALUE_PATTERN.findall(body):
+        code = re.sub(r'"[^"]*"', "", value)
+        if key != "fields" and re.search(rf"\b{re.escape(name)}\b", code):
+            return key
+    return camel_to_snake(name)
+
+
+def is_list_type(type_name):
+    return type_name.endswith("[]") or element_type(type_name) != type_name.strip()
+
+
+def build_plain_parameters(arguments, params, body, records, enums):
     parameters = []
-    for type_name, name, required, is_varargs in params:
+    for argument in split_top_level(arguments):
+        type_name, name = split_type_and_name(argument)
+        if not name or type_name in params:
+            continue
+        if is_list_type(type_name):
+            parameter = {"schema": {"type": "string"}, "description": "Pipe-separated list of values."}
+        else:
+            parameter = {"schema": type_to_schema(type_name, records, enums)}
+        parameters.append({"name": wire_key(body, name), "in": "query", "required": True, **parameter})
+    return parameters
+
+
+def build_fields_parameter(selector):
+    schema = {"type": "string"}
+    description = "Pipe-separated selector of the result fields, nested fields go in brackets, e.g. user[id|first_name]."
+    if selector:
+        schema["default"] = selector
+        description += " Prefilled with every field usos4j requests for this endpoint, edit it to ask for fewer or other fields."
+    return {"name": "fields", "in": "query", "required": False, "schema": schema, "description": description}
+
+
+def build_query_parameters(params_record, params, arguments, body, records, enums):
+    parameters = []
+    for type_name, name, required, is_varargs in params_record:
         schema = type_to_schema(type_name.replace("...", ""), records, enums)
         parameter = {"name": camel_to_snake(name), "in": "query", "required": required, "schema": schema}
         if is_varargs:
             parameter["description"] = "Pipe-separated list of values."
         parameters.append(parameter)
-    parameters.append({
-        "name": "fields",
-        "in": "query",
-        "required": False,
-        "schema": {"type": "string"},
-        "description": "Pipe-separated selector of result fields. usos4j always requests every field of the response model.",
-    })
+    parameters += build_plain_parameters(arguments, params, body, records, enums)
+    parameters = [parameter for parameter in parameters if parameter["name"] != "fields"]
+    parameters.append(build_fields_parameter(default_fields(body, records)))
     return parameters
 
 
@@ -149,6 +265,13 @@ def find_methods(text):
         yield match, text[match.end():end]
 
 
+def error_response():
+    return {
+        "description": "Error returned by USOS",
+        "content": {"application/json": {"schema": {"$ref": f"#/components/schemas/{ERROR_SCHEMA}"}}},
+    }
+
+
 def build_operation(class_name, match, body, params, records, enums):
     annotations, return_type, method_name, arguments = match.groups()
     params_type = arguments.strip().split(" ")[0] if arguments.strip() else None
@@ -157,30 +280,47 @@ def build_operation(class_name, match, body, params, records, enums):
         notes.append("Beta endpoint, may change without notice.")
     if "@NotTested" in annotations:
         notes.append("Not tested against a real USOS installation.")
+    endpoint = ENDPOINT_PATTERN.search(body).group(1)
     operation = {
-        "summary": f"{class_name}#{method_name}",
-        "tags": [re.sub(r"^services/(\w+)/.*", r"\1", ENDPOINT_PATTERN.search(body).group(1))],
-        "parameters": build_query_parameters(params.get(params_type, []), records, enums),
-        "responses": {"200": {"description": "Successful response"}},
+        "operationId": operation_id(endpoint),
+        "summary": endpoint,
+        "tags": [re.sub(r"^services/(\w+)/.*", r"\1", endpoint)],
+        "x-usos4j-method": f"{class_name}#{method_name}",
+        "parameters": build_query_parameters(params.get(params_type, []), params, arguments, body, records, enums),
+        "responses": {"200": {"description": "Successful response"}, "default": error_response()},
+        "security": [{"usosUser" if "requestWithAccessToken(" in body else "usosConsumer": []}],
     }
     if notes:
         operation["description"] = " ".join(notes)
     if return_type != "void":
         operation["responses"]["200"]["content"] = {
-            "application/json": {"schema": type_to_schema(return_type, records, enums)}
+            "application/json": {"schema": response_schema(return_type, records, enums)}
         }
-    if "requestWithAccessToken(" in body:
-        operation["security"] = [{"usosOAuth1": []}]
     return operation
 
 
+def response_schema(return_type, records, enums):
+    schema = type_to_schema(return_type, records, enums)
+    if schema.get("format") in ("date", "date-time"):
+        return {"type": "string", "description": "ISO 8601 " + schema["format"]}
+    return schema
+
+
+def operation_id(endpoint):
+    first, *rest = re.split(r"[/_]", endpoint.removeprefix("services/"))
+    return first + "".join(part.capitalize() for part in rest)
+
+
 def merge_overload(operation, overload):
-    known = {parameter["name"] for parameter in operation["parameters"]}
+    known = {parameter["name"]: parameter for parameter in operation["parameters"]}
     for parameter in overload["parameters"]:
         if parameter["name"] not in known:
             operation["parameters"].append({**parameter, "required": False})
-    if "security" in overload:
-        operation.setdefault("security", overload["security"])
+        elif parameter["name"] == "fields" and "default" not in known["fields"]["schema"] and "default" in parameter["schema"]:
+            known["fields"]["schema"]["default"] = parameter["schema"]["default"]
+    for requirement in overload["security"]:
+        if requirement not in operation["security"]:
+            operation["security"].append(requirement)
 
 
 def build_paths(api_files, params, records, enums):
@@ -208,27 +348,38 @@ def build_specification():
     model_files = read_java_files(SOURCE_ROOT / "model")
     api_files = read_java_files(SOURCE_ROOT / "api")
     records, params, enums = collect_models(model_files)
+    paths = build_paths(api_files, params, records, enums)
     return {
         "openapi": "3.0.3",
         "info": {
             "title": "USOS API as seen by usos4j",
             "version": read_version(),
-            "description": "Only endpoints integrated in usos4j are listed. This specification is generated from usos4j's implementation of the USOS API, it is not an official USOS API specification and does not have to be true: the USOS documentation is sometimes inaccurate, response shapes are only as precise as the Java models, and installations differ. It provides structured data on how the USOS API works.",
+            "license": {"name": "MIT", "url": "https://github.com/WMS-DEV/usos4j/blob/main/LICENSE"},
+            "description": "USOS API endpoints as implemented in usos4j. Enter your own consumer key and secret (and optionally an access token) in the panel above: requests are signed with OAuth 1.0a in your browser and sent straight to the chosen USOS installation.",
         },
         "servers": [{
             "url": "{baseUrl}",
             "variables": {"baseUrl": {"default": "https://apps.usos.pw.edu.pl/", "description": "Base URL of a USOS installation."}},
         }],
-        "paths": build_paths(api_files, params, records, enums),
+        "externalDocs": {"description": "USOS API documentation", "url": "https://apps.usos.edu.pl/developers/api/"},
+        "tags": [{"name": name} for name in sorted({tag for path in paths.values() for tag in path["get"]["tags"]})],
+        "paths": paths,
         "components": {
             "securitySchemes": {
-                "usosOAuth1": {
-                    "type": "http",
-                    "scheme": "OAuth",
-                    "description": "OAuth 1.0a access token obtained for the user. The consumer key is always required.",
-                }
+                "usosConsumer": {
+                    "type": "apiKey",
+                    "in": "header",
+                    "name": "Authorization",
+                    "description": "OAuth 1.0a Authorization header signed with the consumer key and secret only (HMAC-SHA1).",
+                },
+                "usosUser": {
+                    "type": "apiKey",
+                    "in": "header",
+                    "name": "Authorization",
+                    "description": "OAuth 1.0a Authorization header signed with the consumer key and secret and the user's access token and secret (HMAC-SHA1).",
+                },
             },
-            "schemas": build_schemas(records, enums),
+            "schemas": prune_schemas(paths, build_schemas(records, enums)),
         },
     }
 
