@@ -1,26 +1,30 @@
 name: Deploy to Sonatype Central
 
-on:
-  push:
-    branches: [ main ]
-    paths:
-      - core/src/main/java/**
-      - core/pom.xml
+run-name: Deploy ${{ inputs.commit || github.sha }}
 
+on:
   workflow_dispatch:
     inputs:
       commit:
-        description: 'Release commit (defaults to the workflow commit)'
+        description: 'Release commit SHA or tag to deploy (defaults to the workflow commit)'
         type: string
         required: false
       baseline_version:
         description: 'Previous published version (defaults to latest release)'
         type: string
         required: false
+      skip_api_compatibility:
+        description: 'Retry only the deploy, skip the API compatibility check that already passed'
+        type: boolean
+        default: false
+
+concurrency:
+  group: maven-deploy
+  cancel-in-progress: false
 
 jobs:
   api-compatibility:
-    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && !inputs.skip_api_compatibility
     uses: ./.github/workflows/release-api-compatibility.yml
     with:
       candidate-ref: ${{ inputs.commit || github.sha }}
@@ -28,12 +32,21 @@ jobs:
 
   build:
     needs: api-compatibility
+    if: ${{ !cancelled() && github.ref == 'refs/heads/main' && (needs.api-compatibility.result == 'success' || needs.api-compatibility.result == 'skipped') }}
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.commit || github.sha }}
+          fetch-depth: 0
+      - name: Verify the commit is released code from main
+        run: |
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor HEAD FETCH_HEAD || { echo "::error::$(git rev-parse HEAD) is not on main"; exit 1; }
+          version=$(sed -n '0,/<version>/s|.*<version>\(.*\)</version>.*|\1|p' core/pom.xml)
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::core/pom.xml version '$version' is not a release version"; exit 1; }
+          echo "Deploying usos4j $version from $(git rev-parse --short HEAD)" >> "$GITHUB_STEP_SUMMARY"
       - name: Set up Maven Central Repository
         uses: actions/setup-java@v4
         with:
@@ -45,7 +58,16 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: Deploy with Maven
-        run: cd core && mvn -B clean deploy -Pci-cd
+        run: |
+          cd core
+          for attempt in 1 2 3; do
+            if mvn -B clean deploy -Pci-cd; then
+              exit 0
+            fi
+            echo "::warning::Deploy attempt ${attempt} failed"
+            [ "$attempt" -lt 3 ] && sleep $((attempt * 60))
+          done
+          exit 1
         env:
           MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN }}

@@ -99,6 +99,7 @@ jobs:
           gh workflow run copybara.yml --repo "$GITHUB_REPOSITORY" --ref main
           gh workflow run maven-deploy.yml --repo "$GITHUB_REPOSITORY" --ref main \
             -f commit="$(git rev-parse HEAD)" -f baseline_version="$PREVIOUS_RELEASE"
+          echo "Deploy to Sonatype Central started for $(git rev-parse --short HEAD). If it fails, run 'Deploy to Sonatype Central' again with commit=$(git rev-parse HEAD) and skip_api_compatibility=true." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Wait for the code sync to the public repository
         id: sync
