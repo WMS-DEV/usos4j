@@ -7,5 +7,5 @@ public enum NotTestedReason {
      * with possible fixes or improvements
      */
     NO_ACCESS,
-    NO_DATA //no data in PWr database
+    NO_DATA // Contributors found no accessible instance with data to test this endpoint.
 }
