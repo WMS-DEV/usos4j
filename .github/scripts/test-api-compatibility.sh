@@ -45,3 +45,37 @@ for variant in removed generic record; do
 done
 grep -q 'METHOD_RETURN_TYPE_GENERICS_CHANGED' "$work_directory/generic-report/report.xml"
 echo 'Compatibility gate accepts unchanged/additive APIs and rejects removed methods, generic return changes and record constructor changes.'
+
+build_internal_fixture() {
+  name=$1
+  constructors=$2
+  method=$3
+  mkdir -p "$work_directory/$name/classes"
+  for class in UsosUserAPI UsosServerAPI; do
+    printf 'package pl.wmsdev.usos4j.client; public class %s { %s %s }\n' \
+      "$class" "${constructors//CLASS/$class}" "$method" > "$work_directory/$name/$class.java"
+    javac --release 17 -d "$work_directory/$name/classes" "$work_directory/$name/$class.java"
+  done
+  jar --create --file "$work_directory/$name.jar" -C "$work_directory/$name/classes" .
+}
+
+build_internal_fixture internal-baseline \
+  'public CLASS() {} public CLASS(String id, int revision) {}' \
+  'public String value() { return ""; }'
+build_internal_fixture internal-candidate \
+  'CLASS(String id, int revision, long module) {}' \
+  'public String value() { return ""; }'
+build_internal_fixture internal-broken \
+  'CLASS(String id, int revision, long module) {}' ''
+
+bash "$script_directory/check-api-compatibility.sh" "$tool" \
+  "$work_directory/internal-baseline.jar" "$work_directory/internal-candidate.jar" \
+  "$work_directory/internal-constructor-report"
+if bash "$script_directory/check-api-compatibility.sh" "$tool" \
+  "$work_directory/internal-baseline.jar" "$work_directory/internal-broken.jar" \
+  "$work_directory/internal-method-report"; then
+  echo 'Compatibility gate accepted a removed facade method' >&2
+  exit 1
+fi
+grep -q 'METHOD_REMOVED' "$work_directory/internal-method-report/report.xml"
+echo 'Internal constructor changes are accepted while facade method removals are rejected.'

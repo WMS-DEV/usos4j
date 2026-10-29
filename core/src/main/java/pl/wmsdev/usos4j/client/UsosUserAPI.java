@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.client;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import pl.wmsdev.usos4j.api.calendar.UsosCalendarAPI;
 import pl.wmsdev.usos4j.api.cards.UsosCardsAPI;
@@ -24,7 +25,10 @@ import pl.wmsdev.usos4j.api.surveys.UsosSurveysAPI;
 import pl.wmsdev.usos4j.api.theses.UsosThesesAPI;
 import pl.wmsdev.usos4j.api.timetable.UsosTimeTableAPI;
 
-@RequiredArgsConstructor
+/**
+ * User APIs obtained through {@link Usos#getUserApi(pl.wmsdev.usos4j.model.auth.UsosAccessToken)}.
+ */
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class UsosUserAPI {
     private final UsosUsersAPI userApi;
     private final UsosCoursesAPI coursesApi;

@@ -1,5 +1,6 @@
 package pl.wmsdev.usos4j.client;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import pl.wmsdev.usos4j.api.apiref.UsosApiRefAPI;
 import pl.wmsdev.usos4j.api.apisrv.UsosApiSrvAPI;
@@ -18,7 +19,10 @@ import pl.wmsdev.usos4j.api.progs.UsosProgsServerAPI;
 import pl.wmsdev.usos4j.api.terms.UsosTermsAPI;
 import pl.wmsdev.usos4j.api.timetable.UsosTimeTableServerAPI;
 
-@RequiredArgsConstructor
+/**
+ * Server APIs obtained through {@link Usos#getServerApi()}.
+ */
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class UsosServerAPI {
 
     private final UsosApiSrvAPI apiSrvApi;
