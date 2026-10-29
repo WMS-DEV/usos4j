@@ -40,6 +40,9 @@ for mount in "\${mounts[@]}"; do
   target="\${target%%:*}"
   /usr/bin/mkdir -p "\$stage\$(/usr/bin/dirname "\$target")"
   /usr/bin/cp -a "\$source_path" "\$stage\$target"
+  case "\$target" in
+    */.ssh/*) /usr/bin/chmod -R go-rwx "\$stage\$target" ;;
+  esac
 done
 /usr/bin/tar --owner=0 --group=0 --numeric-owner -C "\$stage" -cf - . | "\$real" cp - "\$container:/"
 
