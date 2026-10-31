@@ -6,6 +6,7 @@ from pathlib import Path
 SOURCE_ROOT = Path("core/src/main/java/pl/wmsdev/usos4j")
 POM = Path("core/pom.xml")
 DEFAULT_OUTPUT = Path("build/openapi/openapi.json")
+APIREF_SNAPSHOT = Path(__file__).with_name("apiref-snapshot.json")
 ERROR_SCHEMA = "UsosError"
 
 SIMPLE_TYPES = {
@@ -340,6 +341,150 @@ def build_paths(api_files, params, records, enums):
     return dict(sorted(paths.items()))
 
 
+def load_apiref(path=APIREF_SNAPSHOT):
+    snapshot = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    return {key: snapshot.get(key, {}) for key in ("methods", "modules", "scopes")}
+
+
+def one_line(text):
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def first_sentence(text):
+    return re.split(r"(?<=[.!?])\s", one_line(text), maxsplit=1)[0]
+
+
+def argument_default(argument, schema):
+    value = argument.get("default")
+    if not value or re.search(r"\s|^\(", value) or "$ref" in schema or "format" in schema:
+        return None
+    try:
+        if schema.get("type") == "integer":
+            return int(value)
+        if schema.get("type") == "number":
+            return float(value)
+        if schema.get("type") == "boolean":
+            return {"true": True, "false": False}[value.lower()]
+    except (ValueError, KeyError):
+        return None
+    if schema.get("type") == "string" and ("enum" not in schema or value in schema["enum"]):
+        return value
+    return None
+
+
+def enrich_parameters(operation, entry):
+    arguments = {argument["name"]: argument for argument in entry.get("arguments", [])}
+    for parameter in operation["parameters"]:
+        argument = arguments.get(parameter["name"])
+        if not argument or parameter["name"] == "fields":
+            continue
+        description = [argument.get("description"), parameter.get("description")]
+        parameter["description"] = "\n\n".join(dict.fromkeys(text for text in description if text))
+        if argument.get("required"):
+            parameter["required"] = True
+        if argument.get("deprecated"):
+            parameter["deprecated"] = True
+        default = argument_default(argument, parameter["schema"])
+        if default is not None and not parameter["required"] and "default" not in parameter["schema"]:
+            parameter["schema"]["default"] = default
+
+
+def apiref_security(auth):
+    token = auth.get("token")
+    if token == "required":
+        return [{"usosUser": []}]
+    if token == "optional":
+        return [{"usosConsumer": []}, {"usosUser": []}]
+    return [{"usosConsumer": []}]
+
+
+def enrich_security(operation, auth):
+    for requirement in apiref_security(auth):
+        if requirement not in operation["security"]:
+            operation["security"].append(requirement)
+    if auth.get("scopes"):
+        operation["x-usos-scopes"] = auth["scopes"]
+
+
+def authorization_lines(auth, scopes):
+    lines = [f"**Authorization:** consumer key {auth.get('consumer', 'ignored')}, access token {auth.get('token', 'ignored')}."]
+    if auth.get("administrative_only"):
+        lines.append("Only administrative consumers may call this method.")
+    if auth.get("ssl_required"):
+        lines.append("Requires HTTPS.")
+    if auth.get("scopes"):
+        lines.append("**Scopes:** " + ", ".join(
+            f"`{scope}`" + (f" ({first_sentence(scopes[scope])})" if scope in scopes else "") for scope in auth["scopes"]
+        ))
+    return lines
+
+
+def deprecation_line(deprecated):
+    details = [deprecated.get("reason"), deprecated.get("deprecated_by") and f"Use `{deprecated['deprecated_by']}` instead.",
+               deprecated.get("present_until") and f"Present until {deprecated['present_until']}."]
+    return " ".join(["**Deprecated.**", *[detail for detail in details if detail]])
+
+
+def operation_description(operation, entry, scopes):
+    brief = entry.get("brief_description")
+    sections = [operation.get("description")]
+    if entry.get("description") and entry["description"] != brief:
+        sections.append(entry["description"])
+    if entry.get("deprecated"):
+        sections.append(deprecation_line(entry["deprecated"]))
+    sections.append("\n\n".join(authorization_lines(entry.get("auth", {}), scopes)))
+    if entry.get("ref_url"):
+        sections.append(f"[Official documentation]({entry['ref_url']})")
+    return "\n\n".join(section for section in sections if section)
+
+
+def response_schema_name(operation):
+    schema = operation["responses"]["200"].get("content", {}).get("application/json", {}).get("schema", {})
+    reference = schema.get("$ref") or schema.get("items", {}).get("$ref")
+    return reference.rsplit("/", 1)[-1] if reference else None
+
+
+def describe_result_fields(operation, entry, schemas):
+    schema = schemas.get(response_schema_name(operation))
+    if not schema:
+        return
+    for field in entry.get("result_fields", []):
+        target = schema["properties"].get(field["name"])
+        if target is not None and field.get("description") and "description" not in target and "$ref" not in target:
+            target["description"] = field["description"]
+
+
+def enrich_operation(operation, entry, schemas, scopes):
+    if entry.get("brief_description"):
+        operation["summary"] = one_line(entry["brief_description"])
+    operation["description"] = operation_description(operation, entry, scopes)
+    if entry.get("ref_url"):
+        operation["externalDocs"] = {"description": "Official documentation", "url": entry["ref_url"]}
+    if entry.get("deprecated"):
+        operation["deprecated"] = True
+    if entry.get("returns"):
+        operation["responses"]["200"]["description"] = entry["returns"]
+    enrich_parameters(operation, entry)
+    enrich_security(operation, entry.get("auth", {}))
+    describe_result_fields(operation, entry, schemas)
+
+
+def apply_apiref(paths, schemas, apiref):
+    for url, path in paths.items():
+        entry = apiref["methods"].get(url.lstrip("/"))
+        if entry:
+            enrich_operation(path["get"], entry, schemas, apiref["scopes"])
+
+
+def build_tags(paths, apiref):
+    tags = []
+    for name in sorted({tag for path in paths.values() for tag in path["get"]["tags"]}):
+        module = apiref["modules"].get(f"services/{name}", {})
+        description = "\n\n".join(text for text in (module.get("title"), module.get("description")) if text)
+        tags.append({"name": name, **({"description": description} if description else {})})
+    return tags
+
+
 def read_version():
     return re.search(r"<version>([^<]+)</version>", POM.read_text(encoding="utf-8")).group(1)
 
@@ -349,6 +494,9 @@ def build_specification():
     api_files = read_java_files(SOURCE_ROOT / "api")
     records, params, enums = collect_models(model_files)
     paths = build_paths(api_files, params, records, enums)
+    schemas = build_schemas(records, enums)
+    apiref = load_apiref()
+    apply_apiref(paths, schemas, apiref)
     return {
         "openapi": "3.0.3",
         "info": {
@@ -362,7 +510,7 @@ def build_specification():
             "variables": {"baseUrl": {"default": "https://apps.usos.pw.edu.pl/", "description": "Base URL of a USOS installation."}},
         }],
         "externalDocs": {"description": "USOS API documentation", "url": "https://apps.usos.edu.pl/developers/api/"},
-        "tags": [{"name": name} for name in sorted({tag for path in paths.values() for tag in path["get"]["tags"]})],
+        "tags": build_tags(paths, apiref),
         "paths": paths,
         "components": {
             "securitySchemes": {
@@ -379,7 +527,7 @@ def build_specification():
                     "description": "OAuth 1.0a Authorization header signed with the consumer key and secret and the user's access token and secret (HMAC-SHA1).",
                 },
             },
-            "schemas": prune_schemas(paths, build_schemas(records, enums)),
+            "schemas": prune_schemas(paths, schemas),
         },
     }
 

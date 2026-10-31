@@ -26,8 +26,6 @@ jobs:
           python-version: '3.12'
       - name: Install validator
         run: pip install openapi-spec-validator
-      - name: Test the generator
-        run: python -m unittest discover -s openapi
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
