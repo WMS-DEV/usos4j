@@ -476,12 +476,24 @@ def apply_apiref(paths, schemas, apiref):
             enrich_operation(path["get"], entry, schemas, apiref["scopes"])
 
 
+def module_documentation_url(name, apiref):
+    for method, entry in apiref["methods"].items():
+        if method.startswith(f"services/{name}/") and entry.get("ref_url"):
+            return entry["ref_url"].split("#")[0]
+    return None
+
+
 def build_tags(paths, apiref):
     tags = []
     for name in sorted({tag for path in paths.values() for tag in path["get"]["tags"]}):
         module = apiref["modules"].get(f"services/{name}", {})
-        description = "\n\n".join(text for text in (module.get("title"), module.get("description")) if text)
-        tags.append({"name": name, **({"description": description} if description else {})})
+        summary = (module.get("description") or "").strip().split("\n\n")[0]
+        description = "\n\n".join(text for text in (module.get("title"), summary) if text)
+        tag = {"name": name, **({"description": description} if description else {})}
+        documentation = module_documentation_url(name, apiref)
+        if documentation:
+            tag["externalDocs"] = {"description": "Full module documentation", "url": documentation}
+        tags.append(tag)
     return tags
 
 
