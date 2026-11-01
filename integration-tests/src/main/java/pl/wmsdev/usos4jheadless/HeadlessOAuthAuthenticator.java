@@ -6,24 +6,46 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 @Slf4j
 public class HeadlessOAuthAuthenticator {
 
-    private final Map<String, HeadlessOauthVerifierExtractionStrategy> extractionStrategies = Map.of(
-            "https://apps.usos.pwr.edu.pl/", new PWrOauthVerifierExtractionStrategy(),
-            "https://apps.usos.pw.edu.pl/", new PwOAuthVerifierExtractionStrategy()
-    );
+    private final Map<String, HeadlessOauthVerifierExtractionStrategy> extractionStrategies;
+    private final Supplier<WebDriver> webDriverSupplier;
+
+    public HeadlessOAuthAuthenticator() {
+        this(
+                Map.of(
+                        "https://apps.usos.pwr.edu.pl/", new PWrOauthVerifierExtractionStrategy(),
+                        "https://apps.usos.pw.edu.pl/", new PwOAuthVerifierExtractionStrategy()
+                ),
+                () -> {
+                    ChromeOptions options = new ChromeOptions();
+                    options.addArguments("--headless=new");
+                    return new ChromeDriver(options);
+                }
+        );
+    }
+
+    HeadlessOAuthAuthenticator(
+            Map<String, HeadlessOauthVerifierExtractionStrategy> extractionStrategies,
+            Supplier<WebDriver> webDriverSupplier
+    ) {
+        this.extractionStrategies = extractionStrategies;
+        this.webDriverSupplier = webDriverSupplier;
+    }
 
     public String authenticate(String authUrl, String login, String password) {
-        ChromeOptions options = new ChromeOptions();
-        options.setHeadless(true);
-        WebDriver driver = new ChromeDriver(options);
-        driver.get(authUrl);
-        var result = getStrategyFor(authUrl).extractVerifier(driver, login, password);
-        driver.quit();
-        log.info("Properly obtained verifier from {}", authUrl);
-        return result;
+        WebDriver driver = webDriverSupplier.get();
+        try {
+            driver.get(authUrl);
+            var result = getStrategyFor(authUrl).extractVerifier(driver, login, password);
+            log.info("Properly obtained verifier from {}", authUrl);
+            return result;
+        } finally {
+            driver.quit();
+        }
     }
 
     private HeadlessOauthVerifierExtractionStrategy getStrategyFor(String authUrl) {
@@ -33,6 +55,5 @@ public class HeadlessOAuthAuthenticator {
                 .findFirst()
                 .orElseGet(FakeUsosOauthVerifierExtractionStrategy::new);
     }
-
 
 }
